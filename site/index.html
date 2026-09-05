@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sauerteig Tools – kostenlose Rechner &amp; Web-Apps rund ums Sauerteigbrot</title>
+<meta name="description" content="Sammlung kostenloser Sauerteig-Werkzeuge im Browser: DoughCalculator für Bäckerprozente, Hydration und Brotgewicht – bald ergänzt um DoughPilot Web.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="logo-mark">ST</span>
+      <span>
+        <span class="brand-name" data-i18n="brandName">Sauerteig Tools</span><br>
+        <span class="brand-tag" data-i18n="brandTag">Vorläufiger Name – Domain &amp; Branding noch offen</span>
+      </span>
+    </a>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="de" class="active">DE</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <main>
+    <h1 data-i18n="title">Sauerteig Tools</h1>
+    <p class="lede" data-i18n="lede">Kleine, kostenlose Web-Werkzeuge rund ums Sauerteigbrot – ganz ohne Anmeldung. Ergänzend zur DoughPilot-App entstehen hier Schritt für Schritt weitere Rechner und später die DoughPilot-Web-Version mit denselben Kernfunktionen wie die App.</p>
+
+    <div class="tool-grid">
+      <a class="tool-card" href="doughcalculator/index.html">
+        <span class="tool-icon">🧮</span>
+        <span class="tool-title">DoughCalculator</span>
+        <span class="tool-desc" data-i18n="calcDesc">Bäckerprozente, Hydration und erwartetes Brotgewicht aus deiner Zutatenliste – inkl. Skalieren auf ein Zielgewicht.</span>
+      </a>
+
+      <span class="tool-card disabled">
+        <span class="tool-icon">🚀</span>
+        <span class="tool-title">DoughPilot Web</span>
+        <span class="badge" data-i18n="comingSoon">Demnächst</span>
+        <span class="tool-desc" data-i18n="pilotDesc">Web-Version von DoughPilot mit denselben Funktionen wie die iOS-App – geplant als nächster Schritt.</span>
+      </span>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span data-i18n="footerText">Diese Übersichtsseite ist ein Platzhalter, solange Domain und Marken-Name noch nicht final entschieden sind.</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var I18N = {
+    de: {
+      brandName: "Sauerteig Tools",
+      brandTag: "Vorläufiger Name – Domain & Branding noch offen",
+      title: "Sauerteig Tools",
+      lede: "Kleine, kostenlose Web-Werkzeuge rund ums Sauerteigbrot – ganz ohne Anmeldung. Ergänzend zur DoughPilot-App entstehen hier Schritt für Schritt weitere Rechner und später die DoughPilot-Web-Version mit denselben Kernfunktionen wie die App.",
+      calcDesc: "Bäckerprozente, Hydration und erwartetes Brotgewicht aus deiner Zutatenliste – inkl. Skalieren auf ein Zielgewicht.",
+      comingSoon: "Demnächst",
+      pilotDesc: "Web-Version von DoughPilot mit denselben Funktionen wie die iOS-App – geplant als nächster Schritt.",
+      footerText: "Diese Übersichtsseite ist ein Platzhalter, solange Domain und Marken-Name noch nicht final entschieden sind."
+    },
+    en: {
+      brandName: "Sourdough Tools",
+      brandTag: "Placeholder name – domain & branding not yet decided",
+      title: "Sourdough Tools",
+      lede: "Small, free browser tools for sourdough baking – no sign-up needed. Alongside the DoughPilot app, more calculators will appear here step by step, followed later by a DoughPilot Web version with the same core features as the app.",
+      calcDesc: "Baker's percentages, hydration and expected bread weight from your ingredient list – including scaling to a target weight.",
+      comingSoon: "Coming soon",
+      pilotDesc: "Web version of DoughPilot with the same features as the iOS app – planned as the next step.",
+      footerText: "This overview page is a placeholder until the domain and brand name are finalized."
+    }
+  };
+
+  var LANG_KEY = "doughcalculator.lang"; // shared with DoughCalculator so the choice carries over
+  var lang = localStorage.getItem(LANG_KEY) || "de";
+
+  function apply() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n");
+      if (I18N[lang][key] !== undefined) el.textContent = I18N[lang][key];
+    });
+    document.querySelectorAll(".lang-toggle button").forEach(function (btn) {
+      btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+    });
+  }
+
+  document.querySelectorAll(".lang-toggle button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      lang = btn.getAttribute("data-lang");
+      try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+      apply();
+    });
+  });
+
+  apply();
+})();
+</script>
+</body>
+</html>

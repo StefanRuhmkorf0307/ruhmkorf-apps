@@ -1,0 +1,392 @@
+/* Shared styles for the Sauerteig Tools website collection
+   (Sammelseite + DoughCalculator + future DoughPilot Web) */
+
+:root {
+  --color-bg: #faf6f0;
+  --color-surface: #ffffff;
+  --color-border: #e6ddd0;
+  --color-text: #2c231b;
+  --color-text-muted: #6b5f52;
+  --color-primary: #a9601f;
+  --color-primary-dark: #834b17;
+  --color-primary-contrast: #ffffff;
+  --color-accent: #7a8c5b;
+  --color-danger: #b3452f;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(44, 35, 27, 0.08), 0 1px 2px rgba(44, 35, 27, 0.06);
+  --max-width: 880px;
+  font-size: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--color-primary-dark);
+}
+
+.wrap {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px 64px;
+}
+
+header.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0 18px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 28px;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand .logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 700;
+  font-size: 16px;
+  flex: none;
+}
+
+.brand .brand-name {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.brand .brand-tag {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.lang-toggle {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--color-surface);
+  flex: none;
+}
+
+.lang-toggle button {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.lang-toggle button.active {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin: 0 0 12px;
+}
+
+p.lede {
+  color: var(--color-text-muted);
+  max-width: 60ch;
+  margin: 0 0 28px;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.tool-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.tool-card:not(.disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(44, 35, 27, 0.12);
+}
+
+.tool-card.disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.tool-card .tool-icon {
+  font-size: 1.6rem;
+}
+
+.tool-card .tool-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.tool-card .tool-desc {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1ead9;
+  color: var(--color-text-muted);
+  width: fit-content;
+}
+
+footer.site-footer {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+/* Forms / table used by DoughCalculator */
+
+table.ingredients {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+table.ingredients th {
+  text-align: left;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+  padding: 0 8px 8px;
+  font-weight: 600;
+}
+
+table.ingredients td {
+  padding: 4px 8px;
+  vertical-align: middle;
+}
+
+table.ingredients tbody tr {
+  border-top: 1px solid var(--color-border);
+}
+
+table.ingredients input[type="text"],
+table.ingredients input[type="number"],
+table.ingredients select {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.92rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+table.ingredients .col-amount input {
+  text-align: right;
+}
+
+.icon-btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  color: var(--color-danger);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.icon-btn:hover {
+  background: #fbeceb;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 0.92rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.btn:hover {
+  background: #f4ede2;
+}
+
+.btn.primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 600;
+}
+
+.btn.primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.actions-row {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0 4px;
+  flex-wrap: wrap;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.stat {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.stat .stat-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+.stat .stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.stat .stat-value small {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.target-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.target-row label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.target-row input[type="number"] {
+  width: 120px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.note {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+}
+
+.save-indicator {
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  min-height: 1.2em;
+}
+
+@media (max-width: 560px) {
+  table.ingredients thead {
+    display: none;
+  }
+  table.ingredients tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 8px;
+    padding: 10px 0;
+  }
+  table.ingredients td {
+    padding: 2px 0;
+  }
+  table.ingredients td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+  table.ingredients td.col-remove {
+    grid-column: 1 / -1;
+    text-align: right;
+  }
+}
