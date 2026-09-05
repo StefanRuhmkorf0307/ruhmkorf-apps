@@ -41,5 +41,5 @@ jobs:
           # Häufige Muster bei IONOS: "/apps.ruhmkorf.de/" oder
           # "/clickandbuilds/.../apps/" - im Kundencenter unter
           # Hosting -> Webspace verwalten nachsehen.
-          remote_path: "/apps.ruhmkorf.de/"
+          remote_path: "/apps/"
           sftp_only: true
