@@ -194,8 +194,30 @@
   var CATEGORIES_WITH_HINT = ["liquid", "starter", "other"];
 
   var CATEGORY_LABELS = {
-    de: { flour: "Mehl", water: "Wasser", liquid: "Flüssigkeit", starter: "Anstellgut", salt: "Salz", other: "Sonstiges" },
-    en: { flour: "Flour", water: "Water", liquid: "Liquid", starter: "Starter", salt: "Salt", other: "Other" }
+    de: { flour: "Mehl", water: "Wasser", liquid: "Sonstiges flüssig", starter: "Anstellgut", salt: "Salz", other: "Sonstiges fest" },
+    en: { flour: "Flour", water: "Water", liquid: "Other (liquid)", starter: "Starter", salt: "Salt", other: "Other (solid)" }
+  };
+
+  // Suggestions shown in the free-text description field, filtered to the
+  // ingredient's currently selected category. Still a free-text input -
+  // these are offered via <datalist>, not enforced.
+  var NAME_SUGGESTIONS = {
+    de: {
+      flour: ["Weizenmehl Type 405", "Weizenmehl Type 550", "Weizenmehl Type 812", "Weizenmehl Type 1050", "Roggenmehl Type 997", "Roggenmehl Type 1150", "Dinkelmehl Type 630", "Dinkelmehl Type 1050", "Vollkornmehl (Weizen)", "Vollkornmehl (Roggen)", "Emmermehl", "Einkornmehl"],
+      water: ["Wasser", "Wasser (kalt)", "Wasser (lauwarm)", "Eiswasser"],
+      liquid: ["Milch", "Buttermilch", "Joghurt", "Kefir", "Sahne", "Gemüsebrühe", "Bier", "Öl", "Honig (flüssig)", "Molke"],
+      starter: ["Anstellgut (100% Hydration)", "Anstellgut (50% Hydration, fest)", "Lievito Madre", "Weizensauerteig", "Roggensauerteig", "Hefewasser"],
+      salt: ["Salz", "Meersalz", "Jodsalz"],
+      other: ["Brauner Zucker", "Weißer Zucker", "Honig (fest/kristallisiert)", "Butter", "Sonnenblumenkerne", "Leinsamen", "Walnüsse", "Trockenhefe", "Frischhefe", "Gewürze"]
+    },
+    en: {
+      flour: ["Bread flour (Type 550)", "All-purpose flour (Type 405)", "Whole wheat flour", "Rye flour", "Spelt flour", "Einkorn flour", "Emmer flour"],
+      water: ["Water", "Cold water", "Lukewarm water", "Ice water"],
+      liquid: ["Milk", "Buttermilk", "Yogurt", "Kefir", "Cream", "Vegetable broth", "Beer", "Oil", "Honey (liquid)", "Whey"],
+      starter: ["Starter (100% hydration)", "Starter (50% hydration, stiff)", "Lievito madre", "Wheat sourdough starter", "Rye sourdough starter", "Yeast water"],
+      salt: ["Salt", "Sea salt", "Iodized salt"],
+      other: ["Brown sugar", "White sugar", "Honey (solid/crystallized)", "Butter", "Sunflower seeds", "Flax seeds", "Walnuts", "Dry yeast", "Fresh yeast", "Spices"]
+    }
   };
 
   var I18N = {
@@ -400,6 +422,21 @@
     nameInput.value = ing.name;
     nameInput.addEventListener("input", function () { ing.name = nameInput.value; scheduleSave(); updateScaleIngredientOptions(); });
     tdName.appendChild(nameInput);
+
+    // Free-text field with suggestions that match the currently selected
+    // category (re-created on every render, so a category change instantly
+    // swaps the suggestion list via the full re-render it already triggers).
+    var datalistId = "name-suggestions-" + ing._id;
+    var datalist = document.createElement("datalist");
+    datalist.id = datalistId;
+    var suggestions = (NAME_SUGGESTIONS[state.lang] && NAME_SUGGESTIONS[state.lang][ing.category]) || [];
+    suggestions.forEach(function (s) {
+      var opt = document.createElement("option");
+      opt.value = s;
+      datalist.appendChild(opt);
+    });
+    nameInput.setAttribute("list", datalistId);
+    tdName.appendChild(datalist);
 
     var tdAmount = document.createElement("td");
     tdAmount.className = "col-amount";
