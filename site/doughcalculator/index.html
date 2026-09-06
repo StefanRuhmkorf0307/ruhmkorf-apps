@@ -98,6 +98,19 @@
   .scale-row:first-child {
     border-top: none;
   }
+  .scale-row-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+  }
+  .scale-row-header .scale-row-label {
+    white-space: normal;
+  }
+  .scale-row-header-value {
+    flex: 0 0 auto;
+  }
   .scale-row-label {
     flex: 1 1 160px;
     min-width: 0;
@@ -138,11 +151,25 @@
     background: var(--color-bg);
     color: var(--color-text);
   }
+  /* Hide the native up/down spinner on the value field - the four chevron
+     buttons next to it are the intended way to change the value. */
+  .scale-value-input {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .scale-value-input::-webkit-outer-spin-button,
+  .scale-value-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
   @media (max-width: 560px) {
     .scale-row {
       flex-direction: column;
       align-items: stretch;
       gap: 8px;
+    }
+    .scale-row-header {
+      display: none;
     }
     .scale-row-controls {
       flex: 1 1 auto;
@@ -741,12 +768,34 @@
   }
 
   var SCALE_STEPS = [-50, -1, 1, 50];
+  // Chevrons instead of the raw step numbers on the buttons themselves - the
+  // magnitude (50 vs 1) is conveyed by double vs single chevron, the
+  // direction by which way they point. title/aria-label keep the exact
+  // numeric step available to screen readers and as a hover tooltip.
+  var STEP_ICONS = { "-50": "«", "-1": "‹", "1": "›", "50": "»" };
 
   function renderScaleList() {
     var container = document.getElementById("scale-list");
     if (!container) return;
     container.innerHTML = "";
     var totals = computeTotals();
+
+    function addHeaderRow() {
+      var row = document.createElement("div");
+      row.className = "scale-row scale-row-header";
+
+      var labelEl = document.createElement("div");
+      labelEl.className = "scale-row-label";
+      labelEl.textContent = t("colCategory") + " / " + t("colName");
+      row.appendChild(labelEl);
+
+      var valueEl = document.createElement("div");
+      valueEl.className = "scale-row-controls scale-row-header-value";
+      valueEl.textContent = t("colAmount");
+      row.appendChild(valueEl);
+
+      container.appendChild(row);
+    }
 
     function addRow(labelText, value, onApply) {
       var row = document.createElement("div");
@@ -760,20 +809,8 @@
       var controls = document.createElement("div");
       controls.className = "scale-row-controls";
 
-      function makeStepBtn(delta) {
-        var btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "scale-step-btn";
-        btn.textContent = (delta > 0 ? "+" : "") + delta;
-        btn.addEventListener("click", function () {
-          onApply(Math.max(value + delta, 0.1));
-        });
-        return btn;
-      }
-
-      controls.appendChild(makeStepBtn(SCALE_STEPS[0]));
-      controls.appendChild(makeStepBtn(SCALE_STEPS[1]));
-
+      // Value field first, then all four step buttons together right behind
+      // it (not flanking it on both sides).
       var valueInput = document.createElement("input");
       valueInput.type = "number";
       valueInput.className = "scale-value-input";
@@ -790,17 +827,31 @@
       });
       controls.appendChild(valueInput);
 
-      controls.appendChild(makeStepBtn(SCALE_STEPS[2]));
-      controls.appendChild(makeStepBtn(SCALE_STEPS[3]));
+      SCALE_STEPS.forEach(function (delta) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "scale-step-btn";
+        btn.textContent = STEP_ICONS[String(delta)];
+        var deltaLabel = (delta > 0 ? "+" : "") + delta;
+        btn.title = deltaLabel;
+        btn.setAttribute("aria-label", deltaLabel);
+        btn.addEventListener("click", function () {
+          onApply(Math.max(value + delta, 0.1));
+        });
+        controls.appendChild(btn);
+      });
 
       row.appendChild(controls);
       container.appendChild(row);
     }
 
+    addHeaderRow();
     addRow(t("scaleRowDough"), totals.totalDough, function (newVal) { rescaleTo("dough", null, newVal); });
     addRow(t("scaleRowBread"), totals.breadWeight, function (newVal) { rescaleTo("bread", null, newVal); });
     state.ingredients.forEach(function (ing) {
-      var label = ing.name || ("(" + t("colName") + ")");
+      var desc = ing.name || ("(" + t("colName") + ")");
+      var catLabel = (CATEGORY_LABELS[state.lang] && CATEGORY_LABELS[state.lang][ing.category]) || "";
+      var label = catLabel ? (catLabel + " · " + desc) : desc;
       addRow(label, Number(ing.amount) || 0, function (newVal) { rescaleTo("ingredient", ing._id, newVal); });
     });
   }
