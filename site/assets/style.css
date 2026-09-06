@@ -364,12 +364,6 @@ table.ingredients .col-amount input {
   margin-top: 6px;
 }
 
-.save-indicator {
-  font-size: 0.8rem;
-  color: var(--color-accent);
-  min-height: 1.2em;
-}
-
 @media (max-width: 560px) {
   /* Header can overflow on narrow phones (~320px) when the brand text and
      the language toggle compete for one row - let it wrap instead. */

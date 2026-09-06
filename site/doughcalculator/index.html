@@ -199,10 +199,7 @@
   <header class="site-header">
     <a class="brand" href="../index.html">
       <span class="logo-mark">DC</span>
-      <span>
-        <span class="brand-name">DoughCalculator</span><br>
-        <span class="brand-tag" data-i18n="brandTag">Teil der Sauerteig Tools</span>
-      </span>
+      <span class="brand-name">DoughCalculator</span>
     </a>
     <div class="lang-toggle" role="group" aria-label="Language">
       <button type="button" data-lang="de" class="active">DE</button>
@@ -211,8 +208,7 @@
   </header>
 
   <main>
-    <h1 data-i18n="title">DoughCalculator</h1>
-    <p class="lede" data-i18n="lede">Trage deine Beschreibungen ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht. Keine Anmeldung nötig – deine Werte werden nur lokal in diesem Browser gespeichert.</p>
+    <p class="lede" data-i18n="lede">Trage deine Zutaten ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht.</p>
 
     <section class="card">
       <h2 data-i18n="ingredientsHeading">Zutaten</h2>
@@ -235,7 +231,6 @@
         <button type="button" class="btn" id="reset-example" data-i18n="loadExample">Beispielrezept laden</button>
         <button type="button" class="btn" id="clear-all" data-i18n="clearAll">Alles löschen</button>
       </div>
-      <div class="save-indicator" id="save-indicator"></div>
     </section>
 
     <section class="card">
@@ -365,9 +360,7 @@
 
   var I18N = {
     de: {
-      brandTag: "Teil der Sauerteig Tools",
-      title: "DoughCalculator",
-      lede: "Trage deine Zutaten ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht. Keine Anmeldung nötig – deine Werte werden nur lokal in diesem Browser gespeichert.",
+      lede: "Trage deine Zutaten ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht.",
       ingredientsHeading: "Zutaten",
       colName: "Zusatzinfo", colCategory: "Zutat", colAmount: "Menge (g)", colBaker: "Bäcker-%",
       hintLiquid: "Angenommen: 0% Mehl, 100% Wasser",
@@ -385,15 +378,12 @@
       scaleRowBread: "Brotgewicht",
       storageNote: "Hinweis: Deine Zutatenliste wird automatisch im lokalen Speicher (localStorage) dieses Browsers gespeichert – ohne Konto, ohne Server. Auf einem anderen Gerät oder in einem anderen Browser stehen die Werte nicht zur Verfügung.",
       footerText: "DoughCalculator ist Teil der Sauerteig Tools – Formel-Grundlage: Bäckerprozente auf Basis der Gesamtmehlmenge, Backverlust pauschal 15%.",
-      savedAt: "Gespeichert",
       removeIngredient: "Zutat entfernen",
       errNoFlour: "Bitte mindestens eine Zutat mit Mehlanteil > 0 eingeben, um Hydration/Bäckerprozente zu berechnen.",
       confirmClear: "Wirklich alle Zutaten löschen?"
     },
     en: {
-      brandTag: "Part of the Sourdough Tools",
-      title: "DoughCalculator",
-      lede: "Enter your ingredients and instantly get baker's percentages, hydration, and the expected bread weight. No sign-up needed – your values are only stored locally in this browser.",
+      lede: "Enter your ingredients and instantly get baker's percentages, hydration, and the expected bread weight.",
       ingredientsHeading: "Ingredients",
       colName: "Additional info", colCategory: "Ingredient", colAmount: "Amount (g)", colBaker: "Baker's %",
       hintLiquid: "Assumed: 0% flour, 100% water",
@@ -411,14 +401,13 @@
       scaleRowBread: "Bread weight",
       storageNote: "Note: your ingredient list is saved automatically in this browser's local storage – no account, no server. Values are not available on another device or browser.",
       footerText: "DoughCalculator is part of the Sourdough Tools – baker's percentages are based on total flour weight, baking loss is a flat 15%.",
-      savedAt: "Saved",
       removeIngredient: "Remove ingredient",
       errNoFlour: "Please enter at least one ingredient with flour % > 0 to calculate hydration/baker's percentages.",
       confirmClear: "Really clear all ingredients?"
     }
   };
 
-  var STORAGE_KEY = "doughcalculator.recipe.v6"; // bumped: flour's and salt's descriptions are now always empty too
+  var STORAGE_KEY = "doughcalculator.recipe.v7"; // bumped: example recipe now has Zucker (45g) instead of the empty "Sonstiges flüssig"/"Sonstiges fest" placeholders
   var LANG_KEY = "doughcalculator.lang";
 
   var EXAMPLE_RECIPE = [
@@ -426,8 +415,7 @@
     { name: "", category: "water", amount: 450, flourPct: 0, waterPct: 100 },
     { name: "1:1 Mehl:Wasser", category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
     { name: "", category: "salt", amount: 21, flourPct: 0, waterPct: 0 },
-    { name: "", category: "liquid", amount: 0, flourPct: 0, waterPct: 100 },
-    { name: "", category: "other", amount: 0, flourPct: 0, waterPct: 0 }
+    { name: "Zucker", category: "other", amount: 45, flourPct: 0, waterPct: 0 }
   ];
 
   var state = {
@@ -460,10 +448,6 @@
         return { name: i.name, category: i.category, amount: i.amount, flourPct: i.flourPct, waterPct: i.waterPct };
       });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-      var ind = document.getElementById("save-indicator");
-      var t = I18N[state.lang];
-      var now = new Date();
-      ind.textContent = t.savedAt + " " + now.toLocaleTimeString(state.lang === "de" ? "de-DE" : "en-US", { hour: "2-digit", minute: "2-digit" });
     } catch (e) {
       /* localStorage may be unavailable (private mode, quota); fail silently */
     }
