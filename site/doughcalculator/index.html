@@ -882,7 +882,16 @@
     addHeaderRow();
     addRow(t("scaleRowDough"), totals.totalDough, function (newVal) { rescaleTo("dough", null, newVal); });
     addRow(t("scaleRowBread"), totals.breadWeight, function (newVal) { rescaleTo("bread", null, newVal); });
-    state.ingredients.forEach(function (ing, idx) {
+    var shownCount = 0;
+    state.ingredients.forEach(function (ing) {
+      // Ingredients at 0% baker's percentage (i.e. currently 0g) have
+      // nothing to scale yet - they clutter the list without being
+      // adjustable in a meaningful way, so they're left out here. They
+      // still show up (and can be given an amount) in the Zutaten table
+      // above; once that's non-zero they'll appear here too.
+      var bp = bakerPercent(ing, totals);
+      if (bp === 0) return;
+
       var catLabel = (CATEGORY_LABELS[state.lang] && CATEGORY_LABELS[state.lang][ing.category]) || "";
       var label;
       if (hasNoDescription(ing.category)) {
@@ -893,7 +902,8 @@
         var desc = ing.name || ("(" + t("colName") + ")");
         label = catLabel ? (catLabel + " · " + desc) : desc;
       }
-      addRow(label, Number(ing.amount) || 0, function (newVal) { rescaleTo("ingredient", ing._id, newVal); }, idx === 0 ? "scale-row-divider-top" : null);
+      addRow(label, Number(ing.amount) || 0, function (newVal) { rescaleTo("ingredient", ing._id, newVal); }, shownCount === 0 ? "scale-row-divider-top" : null);
+      shownCount++;
     });
   }
 
