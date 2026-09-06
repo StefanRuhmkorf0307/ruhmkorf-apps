@@ -91,7 +91,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 10px 0;
+    /* Same vertical rhythm as a row in the Zutaten table (4px cell padding,
+       ~40px row height) instead of the airier 10px this used to have. */
+    padding: 5px 0;
     flex-wrap: wrap;
   }
   /* Only the boundary between the two computed totals (Teiggewicht,
@@ -132,7 +134,7 @@
     background: var(--color-surface);
     border-radius: 6px;
     min-width: 40px;
-    height: 34px;
+    height: 30px;
     padding: 0 8px;
     font-size: 0.85rem;
     font-weight: 600;
@@ -144,7 +146,7 @@
   }
   .scale-value-input {
     width: 84px;
-    height: 34px;
+    height: 30px;
     padding: 0 8px;
     border: 1px solid var(--color-border);
     border-radius: 6px;
@@ -208,8 +210,6 @@
   </header>
 
   <main>
-    <p class="lede" data-i18n="lede">Trage deine Zutaten ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht.</p>
-
     <section class="card">
       <h2 data-i18n="ingredientsHeading">Zutaten</h2>
       <div>
@@ -241,31 +241,46 @@
 
     <section class="card">
       <h2 data-i18n="summaryHeading">Übersicht</h2>
-      <div class="summary-grid">
-        <div class="stat">
-          <div class="stat-label" data-i18n="statDough">Gesamtteiggewicht</div>
-          <div class="stat-value" id="stat-dough">–</div>
+      <div class="summary-list">
+        <div class="summary-item">
+          <div class="summary-row">
+            <span class="summary-label" data-i18n="statDough">Gesamtteiggewicht</span>
+            <span class="summary-value" id="stat-dough">–</span>
+          </div>
+          <p class="summary-explain" data-i18n="statDoughExplain">Summe der Mengen aller Zutaten.</p>
         </div>
-        <div class="stat">
-          <div class="stat-label" data-i18n="statFlour">Gesamtmehlgewicht</div>
-          <div class="stat-value" id="stat-flour">–</div>
+        <div class="summary-item">
+          <div class="summary-row">
+            <span class="summary-label" data-i18n="statFlour">Gesamtmehlgewicht</span>
+            <span class="summary-value" id="stat-flour">–</span>
+          </div>
+          <p class="summary-explain" data-i18n="statFlourExplain">Summe aus Menge × Mehlanteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Mehl).</p>
         </div>
-        <div class="stat">
-          <div class="stat-label" data-i18n="statWater">Gesamtwassergewicht</div>
-          <div class="stat-value" id="stat-water">–</div>
+        <div class="summary-item">
+          <div class="summary-row">
+            <span class="summary-label" data-i18n="statWater">Gesamtwassergewicht</span>
+            <span class="summary-value" id="stat-water">–</span>
+          </div>
+          <p class="summary-explain" data-i18n="statWaterExplain">Summe aus Menge × Wasseranteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Wasser).</p>
         </div>
-        <div class="stat">
-          <div class="stat-label" data-i18n="statHydration">Hydration</div>
-          <div class="stat-value" id="stat-hydration">–</div>
+        <div class="summary-item">
+          <div class="summary-row">
+            <span class="summary-label" data-i18n="statHydration">Hydration</span>
+            <span class="summary-value" id="stat-hydration">–</span>
+          </div>
+          <p class="summary-explain" data-i18n="statHydrationExplain">Gesamtwassergewicht geteilt durch Gesamtmehlgewicht, × 100.</p>
         </div>
-        <div class="stat">
-          <div class="stat-label" data-i18n="statBreadWeight">Erwartetes Brotgewicht <small data-i18n="statBreadWeightHint">(15% Backverlust)</small></div>
-          <div class="stat-value" id="stat-bread">–</div>
+        <div class="summary-item">
+          <div class="summary-row">
+            <span class="summary-label" data-i18n="statBreadWeight">Erwartetes Brotgewicht</span>
+            <span class="summary-value" id="stat-bread">–</span>
+          </div>
+          <p class="summary-explain" data-i18n="statBreadWeightExplain">Gesamtteiggewicht abzüglich 15% Backverlust beim Backen.</p>
         </div>
       </div>
     </section>
 
-    <p class="note" data-i18n="storageNote">Hinweis: Deine Beschreibungsliste wird automatisch im lokalen Speicher (localStorage) dieses Browsers gespeichert – ohne Konto, ohne Server. Auf einem anderen Gerät oder in einem anderen Browser stehen die Werte nicht zur Verfügung.</p>
+    <p class="note" data-i18n="storageNote">Hinweis: Deine Zutatenliste wird automatisch im lokalen Speicher (localStorage) dieses Browsers gespeichert – ohne Konto, ohne Server. Auf einem anderen Gerät oder in einem anderen Browser stehen die Werte nicht zur Verfügung.</p>
   </main>
 
   <footer class="site-footer">
@@ -360,7 +375,6 @@
 
   var I18N = {
     de: {
-      lede: "Trage deine Zutaten ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht.",
       ingredientsHeading: "Zutaten",
       colName: "Zusatzinfo", colCategory: "Zutat", colAmount: "Menge (g)", colBaker: "Bäcker-%",
       hintLiquid: "Angenommen: 0% Mehl, 100% Wasser",
@@ -371,7 +385,12 @@
       clearAll: "Alles löschen",
       summaryHeading: "Übersicht",
       statDough: "Gesamtteiggewicht", statFlour: "Gesamtmehlgewicht", statWater: "Gesamtwassergewicht",
-      statHydration: "Hydration", statBreadWeight: "Erwartetes Brotgewicht", statBreadWeightHint: "(15% Backverlust)",
+      statHydration: "Hydration", statBreadWeight: "Erwartetes Brotgewicht",
+      statDoughExplain: "Summe der Mengen aller Zutaten.",
+      statFlourExplain: "Summe aus Menge × Mehlanteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Mehl).",
+      statWaterExplain: "Summe aus Menge × Wasseranteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Wasser).",
+      statHydrationExplain: "Gesamtwassergewicht geteilt durch Gesamtmehlgewicht, × 100.",
+      statBreadWeightExplain: "Gesamtteiggewicht abzüglich 15% Backverlust beim Backen.",
       scaleHeading: "Rezept skalieren",
       scaleNote: "Passe Teiggewicht, Brotgewicht oder eine einzelne Zutat an – der Rest wird proportional mitskaliert, die Bäckerprozente bleiben dabei unverändert.",
       scaleRowDough: "Teiggewicht",
@@ -383,7 +402,6 @@
       confirmClear: "Wirklich alle Zutaten löschen?"
     },
     en: {
-      lede: "Enter your ingredients and instantly get baker's percentages, hydration, and the expected bread weight.",
       ingredientsHeading: "Ingredients",
       colName: "Additional info", colCategory: "Ingredient", colAmount: "Amount (g)", colBaker: "Baker's %",
       hintLiquid: "Assumed: 0% flour, 100% water",
@@ -394,7 +412,12 @@
       clearAll: "Clear all",
       summaryHeading: "Overview",
       statDough: "Total dough weight", statFlour: "Total flour weight", statWater: "Total water weight",
-      statHydration: "Hydration", statBreadWeight: "Expected bread weight", statBreadWeightHint: "(15% baking loss)",
+      statHydration: "Hydration", statBreadWeight: "Expected bread weight",
+      statDoughExplain: "Sum of the amounts of all ingredients.",
+      statFlourExplain: "Sum of amount × flour share across all ingredients (e.g. starter counts proportionally as flour).",
+      statWaterExplain: "Sum of amount × water share across all ingredients (e.g. starter counts proportionally as water).",
+      statHydrationExplain: "Total water weight divided by total flour weight, × 100.",
+      statBreadWeightExplain: "Total dough weight minus a flat 15% baking loss.",
       scaleHeading: "Scale recipe",
       scaleNote: "Adjust dough weight, bread weight, or a single ingredient - everything else scales along with it, and baker's percentages stay the same.",
       scaleRowDough: "Dough weight",
@@ -619,10 +642,32 @@
     var amountInput = document.createElement("input");
     amountInput.type = "number";
     amountInput.min = "0";
-    amountInput.step = "1";
-    amountInput.value = ing.amount;
+    // The spinner/keyboard step (and the displayed precision) adapt to the
+    // current amount's magnitude, same as the "Rezept skalieren" steppers:
+    // fine 0.1g nudges under 10g, whole grams from 10g up.
+    function refreshAmountStepAndValue(commitValue) {
+      var steps = stepSizesForValue(ing.amount);
+      amountInput.step = steps.small < 1 ? "0.1" : String(steps.small);
+      if (commitValue) {
+        var rounded = steps.small < 1
+          ? Math.round((Number(ing.amount) || 0) * 10) / 10
+          : Math.round(Number(ing.amount) || 0);
+        ing.amount = rounded;
+        amountInput.value = steps.small < 1 ? rounded.toFixed(1) : rounded;
+      }
+      return steps;
+    }
+    refreshAmountStepAndValue(true);
     amountInput.addEventListener("input", function () {
       ing.amount = amountInput.value === "" ? 0 : parseFloat(amountInput.value);
+      // Only update the step size here, not the displayed text - reformatting
+      // mid-keystroke (e.g. appending ".0") would fight with typing.
+      refreshAmountStepAndValue(false);
+      scheduleSave();
+      renderSummaryAndBakerPercents();
+    });
+    amountInput.addEventListener("blur", function () {
+      refreshAmountStepAndValue(true);
       scheduleSave();
       renderSummaryAndBakerPercents();
     });
