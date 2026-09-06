@@ -92,11 +92,13 @@
     justify-content: space-between;
     gap: 12px;
     padding: 10px 0;
-    border-top: 1px solid var(--color-border);
     flex-wrap: wrap;
   }
-  .scale-row:first-child {
-    border-top: none;
+  /* Only the boundary between the two computed totals (Teiggewicht,
+     Brotgewicht) and the actual ingredient rows keeps a divider line -
+     all other rows sit flush against each other. */
+  .scale-row-divider-top {
+    border-top: 1px solid var(--color-border);
   }
   .scale-row-header {
     font-size: 0.75rem;
@@ -411,12 +413,12 @@
     }
   };
 
-  var STORAGE_KEY = "doughcalculator.recipe.v4"; // bumped: v3 was missing the "Sonstiges fluessig"/"Sonstiges fest" 0g placeholder rows
+  var STORAGE_KEY = "doughcalculator.recipe.v5"; // bumped: water's description is now always empty (no more "Wasser" text)
   var LANG_KEY = "doughcalculator.lang";
 
   var EXAMPLE_RECIPE = [
     { name: "Weizenmehl Type 405", category: "flour",   amount: 750, flourPct: 100, waterPct: 0 },
-    { name: "Wasser", category: "water", amount: 450, flourPct: 0, waterPct: 100 },
+    { name: "", category: "water", amount: 450, flourPct: 0, waterPct: 100 },
     { name: "1:1 Mehl:Wasser", category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
     { name: "Salz", category: "salt", amount: 21, flourPct: 0, waterPct: 0 },
     { name: "", category: "liquid", amount: 0, flourPct: 0, waterPct: 100 },
@@ -561,6 +563,9 @@
       var defaults = CATEGORY_DEFAULTS[ing.category] || { flour: 0, water: 0 };
       ing.flourPct = defaults.flour;
       ing.waterPct = defaults.water;
+      // Water has no description of its own - it's always just "Wasser",
+      // so drop any leftover text from a previous category.
+      if (ing.category === "water") ing.name = "";
       scheduleSave();
       render();
     });
@@ -570,52 +575,54 @@
     tdName.className = "col-name";
     tdName.dataset.label = t("colName");
 
-    var nameWrap = document.createElement("div");
-    nameWrap.className = "name-field-wrap";
+    // Water's description is always empty and can't hold anything useful,
+    // so it gets no input field at all - just an empty cell.
+    if (ing.category !== "water") {
+      var nameWrap = document.createElement("div");
+      nameWrap.className = "name-field-wrap";
 
-    var nameInput = document.createElement("input");
-    nameInput.type = "text";
-    nameInput.autocomplete = "off";
-    nameInput.value = ing.name;
-    nameInput.addEventListener("input", function () { applyNameChange(ing, nameInput); });
-    nameWrap.appendChild(nameInput);
+      var nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.autocomplete = "off";
+      nameInput.value = ing.name;
+      nameInput.addEventListener("input", function () { applyNameChange(ing, nameInput); });
+      nameWrap.appendChild(nameInput);
 
-    // Custom suggestion dropdown (not a native <datalist>) filtered only by
-    // the currently selected category - never by what's already typed, so
-    // the full list stays available even once there's text in the field.
-    // Categories with no meaningful suggestions (e.g. water) get no
-    // dropdown at all.
-    var suggestions = (NAME_SUGGESTIONS[state.lang] && NAME_SUGGESTIONS[state.lang][ing.category]) || [];
-    if (suggestions.length > 0) {
-      var suggestList = document.createElement("div");
-      suggestList.className = "name-suggest-list";
-      suggestList.hidden = true;
-      suggestions.forEach(function (s) {
-        var btn = document.createElement("button");
-        btn.type = "button";
-        btn.textContent = s;
-        // mousedown (fired, and prevented, before the input would blur) lets
-        // us fill the value without the browser yanking focus away first.
-        btn.addEventListener("mousedown", function (e) {
-          e.preventDefault();
-          nameInput.value = s;
-          applyNameChange(ing, nameInput);
-          suggestList.hidden = true;
-          nameInput.focus();
+      // Custom suggestion dropdown (not a native <datalist>) filtered only by
+      // the currently selected category - never by what's already typed, so
+      // the full list stays available even once there's text in the field.
+      var suggestions = (NAME_SUGGESTIONS[state.lang] && NAME_SUGGESTIONS[state.lang][ing.category]) || [];
+      if (suggestions.length > 0) {
+        var suggestList = document.createElement("div");
+        suggestList.className = "name-suggest-list";
+        suggestList.hidden = true;
+        suggestions.forEach(function (s) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = s;
+          // mousedown (fired, and prevented, before the input would blur) lets
+          // us fill the value without the browser yanking focus away first.
+          btn.addEventListener("mousedown", function (e) {
+            e.preventDefault();
+            nameInput.value = s;
+            applyNameChange(ing, nameInput);
+            suggestList.hidden = true;
+            nameInput.focus();
+          });
+          suggestList.appendChild(btn);
         });
-        suggestList.appendChild(btn);
-      });
-      nameInput.addEventListener("focus", function () { suggestList.hidden = false; });
-      nameInput.addEventListener("click", function () { suggestList.hidden = false; });
-      nameInput.addEventListener("blur", function () {
-        // Small delay so a click on a suggestion (mousedown -> click) can
-        // still land before the list disappears.
-        setTimeout(function () { suggestList.hidden = true; }, 150);
-      });
-      nameWrap.appendChild(suggestList);
-    }
+        nameInput.addEventListener("focus", function () { suggestList.hidden = false; });
+        nameInput.addEventListener("click", function () { suggestList.hidden = false; });
+        nameInput.addEventListener("blur", function () {
+          // Small delay so a click on a suggestion (mousedown -> click) can
+          // still land before the list disappears.
+          setTimeout(function () { suggestList.hidden = true; }, 150);
+        });
+        nameWrap.appendChild(suggestList);
+      }
 
-    tdName.appendChild(nameWrap);
+      tdName.appendChild(nameWrap);
+    }
 
     var tdAmount = document.createElement("td");
     tdAmount.className = "col-amount";
@@ -797,9 +804,10 @@
       container.appendChild(row);
     }
 
-    function addRow(labelText, value, onApply) {
+    function addRow(labelText, value, onApply, extraClass) {
       var row = document.createElement("div");
       row.className = "scale-row";
+      if (extraClass) row.classList.add(extraClass);
 
       var labelEl = document.createElement("div");
       labelEl.className = "scale-row-label";
@@ -848,11 +856,18 @@
     addHeaderRow();
     addRow(t("scaleRowDough"), totals.totalDough, function (newVal) { rescaleTo("dough", null, newVal); });
     addRow(t("scaleRowBread"), totals.breadWeight, function (newVal) { rescaleTo("bread", null, newVal); });
-    state.ingredients.forEach(function (ing) {
-      var desc = ing.name || ("(" + t("colName") + ")");
+    state.ingredients.forEach(function (ing, idx) {
       var catLabel = (CATEGORY_LABELS[state.lang] && CATEGORY_LABELS[state.lang][ing.category]) || "";
-      var label = catLabel ? (catLabel + " · " + desc) : desc;
-      addRow(label, Number(ing.amount) || 0, function (newVal) { rescaleTo("ingredient", ing._id, newVal); });
+      var label;
+      if (ing.category === "water") {
+        // Water's description is always empty and isn't shown here -
+        // "Wasser · Wasser" would just be a redundant duplicate.
+        label = catLabel || t("colName");
+      } else {
+        var desc = ing.name || ("(" + t("colName") + ")");
+        label = catLabel ? (catLabel + " · " + desc) : desc;
+      }
+      addRow(label, Number(ing.amount) || 0, function (newVal) { rescaleTo("ingredient", ing._id, newVal); }, idx === 0 ? "scale-row-divider-top" : null);
     });
   }
 

@@ -234,10 +234,6 @@ table.ingredients td {
   vertical-align: middle;
 }
 
-table.ingredients tbody tr {
-  border-top: 1px solid var(--color-border);
-}
-
 table.ingredients input[type="text"],
 table.ingredients input[type="number"],
 table.ingredients select {
