@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DoughCalculator – Bäckerprozente, Hydration &amp; Brotgewicht</title>
-<meta name="description" content="Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und erwartetes Brotgewicht aus deiner Zutatenliste berechnen und Rezepte proportional skalieren.">
+<meta name="description" content="Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und erwartetes Brotgewicht aus deiner Beschreibungsliste berechnen und Rezepte proportional skalieren.">
 <link rel="stylesheet" href="../assets/style.css">
 <style>
   /* page-specific tweaks */
@@ -87,16 +87,16 @@
 
   <main>
     <h1 data-i18n="title">DoughCalculator</h1>
-    <p class="lede" data-i18n="lede">Trage deine Zutaten ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht. Keine Anmeldung nötig – deine Werte werden nur lokal in diesem Browser gespeichert.</p>
+    <p class="lede" data-i18n="lede">Trage deine Beschreibungen ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht. Keine Anmeldung nötig – deine Werte werden nur lokal in diesem Browser gespeichert.</p>
 
     <section class="card">
-      <h2 data-i18n="ingredientsHeading">Zutaten</h2>
+      <h2 data-i18n="ingredientsHeading">Beschreibungen</h2>
       <div style="overflow-x:auto;">
         <table class="ingredients" id="ingredients-table">
           <thead>
             <tr>
-              <th class="col-name" data-i18n="colName">Zutat</th>
               <th class="col-category" data-i18n="colCategory">Kategorie</th>
+              <th class="col-name" data-i18n="colName">Beschreibung</th>
               <th class="col-amount" data-i18n="colAmount">Menge (g)</th>
               <th class="col-baker" data-i18n="colBaker">Bäcker-%</th>
               <th class="col-remove"></th>
@@ -106,7 +106,7 @@
         </table>
       </div>
       <div class="actions-row">
-        <button type="button" class="btn" id="add-ingredient" data-i18n="addIngredient">+ Zutat hinzufügen</button>
+        <button type="button" class="btn" id="add-ingredient" data-i18n="addIngredient">+ Beschreibung hinzufügen</button>
         <button type="button" class="btn" id="reset-example" data-i18n="loadExample">Beispielrezept laden</button>
         <button type="button" class="btn" id="clear-all" data-i18n="clearAll">Alles löschen</button>
       </div>
@@ -141,7 +141,7 @@
 
     <section class="card">
       <h2 data-i18n="scaleHeading">Rezept skalieren</h2>
-      <p class="note" data-i18n="scaleNote">Wähle eine Zielgröße – alle Zutaten werden proportional angepasst, die Bäckerprozente bleiben dabei unverändert.</p>
+      <p class="note" data-i18n="scaleNote">Wähle eine Zielgröße – alle Beschreibungen werden proportional angepasst, die Bäckerprozente bleiben dabei unverändert.</p>
       <div class="scale-options">
         <div class="scale-option">
           <input type="radio" name="scale-mode" id="scale-mode-dough" value="dough" checked>
@@ -155,7 +155,7 @@
         </div>
         <div class="scale-option">
           <input type="radio" name="scale-mode" id="scale-mode-ingredient" value="ingredient">
-          <label for="scale-mode-ingredient" data-i18n="scaleByIngredient">Menge einer Zutat</label>
+          <label for="scale-mode-ingredient" data-i18n="scaleByIngredient">Menge einer Beschreibung</label>
           <select id="scale-ingredient-select"></select>
           <input type="number" id="scale-value-ingredient" min="0" step="1">
         </div>
@@ -166,7 +166,7 @@
       <div class="error-text" id="scale-error"></div>
     </section>
 
-    <p class="note" data-i18n="storageNote">Hinweis: Deine Zutatenliste wird automatisch im lokalen Speicher (localStorage) dieses Browsers gespeichert – ohne Konto, ohne Server. Auf einem anderen Gerät oder in einem anderen Browser stehen die Werte nicht zur Verfügung.</p>
+    <p class="note" data-i18n="storageNote">Hinweis: Deine Beschreibungsliste wird automatisch im lokalen Speicher (localStorage) dieses Browsers gespeichert – ohne Konto, ohne Server. Auf einem anderen Gerät oder in einem anderen Browser stehen die Werte nicht zur Verfügung.</p>
   </main>
 
   <footer class="site-footer">
@@ -202,62 +202,62 @@
     de: {
       brandTag: "Teil der Sauerteig Tools",
       title: "DoughCalculator",
-      lede: "Trage deine Zutaten ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht. Keine Anmeldung nötig – deine Werte werden nur lokal in diesem Browser gespeichert.",
-      ingredientsHeading: "Zutaten",
-      colName: "Zutat", colCategory: "Kategorie", colAmount: "Menge (g)", colBaker: "Bäcker-%",
+      lede: "Trage deine Beschreibungen ein und erhalte sofort Bäckerprozente, Hydration und das erwartete Brotgewicht. Keine Anmeldung nötig – deine Werte werden nur lokal in diesem Browser gespeichert.",
+      ingredientsHeading: "Beschreibungen",
+      colName: "Beschreibung", colCategory: "Kategorie", colAmount: "Menge (g)", colBaker: "Bäcker-%",
       hintLiquid: "Angenommen: 0% Mehl, 100% Wasser",
       hintStarter: "Angenommen: 50% Mehl, 50% Wasser (Hydration 100%)",
       hintOther: "Angenommen: 0% Mehl, 0% Wasser (kein Beitrag zur Hydration)",
-      addIngredient: "+ Zutat hinzufügen",
+      addIngredient: "+ Beschreibung hinzufügen",
       loadExample: "Beispielrezept laden",
       clearAll: "Alles löschen",
       summaryHeading: "Übersicht",
       statDough: "Gesamtteiggewicht", statFlour: "Gesamtmehlgewicht", statWater: "Gesamtwassergewicht",
       statHydration: "Hydration", statBreadWeight: "Erwartetes Brotgewicht", statBreadWeightHint: "(15% Backverlust)",
       scaleHeading: "Rezept skalieren",
-      scaleNote: "Wähle eine Zielgröße – alle Zutaten werden proportional angepasst, die Bäckerprozente bleiben dabei unverändert.",
+      scaleNote: "Wähle eine Zielgröße – alle Beschreibungen werden proportional angepasst, die Bäckerprozente bleiben dabei unverändert.",
       scaleByDough: "Ziel-Teiggewicht (g)",
       scaleByBread: "Ziel-Brotgewicht (g)",
-      scaleByIngredient: "Menge einer Zutat",
+      scaleByIngredient: "Menge einer Beschreibung",
       applyScale: "Skalieren anwenden",
-      storageNote: "Hinweis: Deine Zutatenliste wird automatisch im lokalen Speicher (localStorage) dieses Browsers gespeichert – ohne Konto, ohne Server. Auf einem anderen Gerät oder in einem anderen Browser stehen die Werte nicht zur Verfügung.",
+      storageNote: "Hinweis: Deine Beschreibungsliste wird automatisch im lokalen Speicher (localStorage) dieses Browsers gespeichert – ohne Konto, ohne Server. Auf einem anderen Gerät oder in einem anderen Browser stehen die Werte nicht zur Verfügung.",
       footerText: "DoughCalculator ist Teil der Sauerteig Tools – Formel-Grundlage: Bäckerprozente auf Basis der Gesamtmehlmenge, Backverlust pauschal 15%.",
       savedAt: "Gespeichert",
-      removeIngredient: "Zutat entfernen",
-      errNoFlour: "Bitte mindestens eine Zutat mit Mehlanteil > 0 eingeben, um Hydration/Bäckerprozente zu berechnen.",
-      errScaleZero: "Diese Zutat hat aktuell 0 g bzw. 0% Bäckeranteil und kann nicht als Referenz für die Skalierung genutzt werden.",
+      removeIngredient: "Beschreibung entfernen",
+      errNoFlour: "Bitte mindestens eine Beschreibung mit Mehlanteil > 0 eingeben, um Hydration/Bäckerprozente zu berechnen.",
+      errScaleZero: "Diese Beschreibung hat aktuell 0 g bzw. 0% Bäckeranteil und kann nicht als Referenz für die Skalierung genutzt werden.",
       errScaleValue: "Bitte einen Zielwert größer 0 eingeben.",
-      confirmClear: "Wirklich alle Zutaten löschen?"
+      confirmClear: "Wirklich alle Beschreibungen löschen?"
     },
     en: {
       brandTag: "Part of the Sourdough Tools",
       title: "DoughCalculator",
-      lede: "Enter your ingredients and instantly get baker's percentages, hydration, and the expected bread weight. No sign-up needed – your values are only stored locally in this browser.",
-      ingredientsHeading: "Ingredients",
-      colName: "Ingredient", colCategory: "Category", colAmount: "Amount (g)", colBaker: "Baker's %",
+      lede: "Enter your descriptions and instantly get baker's percentages, hydration, and the expected bread weight. No sign-up needed – your values are only stored locally in this browser.",
+      ingredientsHeading: "Descriptions",
+      colName: "Description", colCategory: "Category", colAmount: "Amount (g)", colBaker: "Baker's %",
       hintLiquid: "Assumed: 0% flour, 100% water",
       hintStarter: "Assumed: 50% flour, 50% water (100% hydration)",
       hintOther: "Assumed: 0% flour, 0% water (no contribution to hydration)",
-      addIngredient: "+ Add ingredient",
+      addIngredient: "+ Add description",
       loadExample: "Load example recipe",
       clearAll: "Clear all",
       summaryHeading: "Overview",
       statDough: "Total dough weight", statFlour: "Total flour weight", statWater: "Total water weight",
       statHydration: "Hydration", statBreadWeight: "Expected bread weight", statBreadWeightHint: "(15% baking loss)",
       scaleHeading: "Scale recipe",
-      scaleNote: "Pick a target size – all ingredients are adjusted proportionally, so baker's percentages stay the same.",
+      scaleNote: "Pick a target size – all descriptions are adjusted proportionally, so baker's percentages stay the same.",
       scaleByDough: "Target dough weight (g)",
       scaleByBread: "Target bread weight (g)",
-      scaleByIngredient: "Amount of one ingredient",
+      scaleByIngredient: "Amount of one description",
       applyScale: "Apply scaling",
-      storageNote: "Note: your ingredient list is saved automatically in this browser's local storage – no account, no server. Values are not available on another device or browser.",
+      storageNote: "Note: your description list is saved automatically in this browser's local storage – no account, no server. Values are not available on another device or browser.",
       footerText: "DoughCalculator is part of the Sourdough Tools – baker's percentages are based on total flour weight, baking loss is a flat 15%.",
       savedAt: "Saved",
-      removeIngredient: "Remove ingredient",
-      errNoFlour: "Please enter at least one ingredient with flour % > 0 to calculate hydration/baker's percentages.",
-      errScaleZero: "This ingredient currently has 0 g / 0% baker's ratio and can't be used as the scaling reference.",
+      removeIngredient: "Remove description",
+      errNoFlour: "Please enter at least one description with flour % > 0 to calculate hydration/baker's percentages.",
+      errScaleZero: "This description currently has 0 g / 0% baker's ratio and can't be used as the scaling reference.",
       errScaleValue: "Please enter a target value greater than 0.",
-      confirmClear: "Really clear all ingredients?"
+      confirmClear: "Really clear all descriptions?"
     }
   };
 
@@ -370,15 +370,6 @@
     var tr = document.createElement("tr");
     tr.dataset.id = ing._id;
 
-    var tdName = document.createElement("td");
-    tdName.className = "col-name";
-    tdName.dataset.label = t("colName");
-    var nameInput = document.createElement("input");
-    nameInput.type = "text";
-    nameInput.value = ing.name;
-    nameInput.addEventListener("input", function () { ing.name = nameInput.value; scheduleSave(); updateScaleIngredientOptions(); });
-    tdName.appendChild(nameInput);
-
     var tdCat = document.createElement("td");
     tdCat.className = "col-category";
     tdCat.dataset.label = t("colCategory");
@@ -400,6 +391,15 @@
       render();
     });
     tdCat.appendChild(catSelect);
+
+    var tdName = document.createElement("td");
+    tdName.className = "col-name";
+    tdName.dataset.label = t("colName");
+    var nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.value = ing.name;
+    nameInput.addEventListener("input", function () { ing.name = nameInput.value; scheduleSave(); updateScaleIngredientOptions(); });
+    tdName.appendChild(nameInput);
 
     var tdAmount = document.createElement("td");
     tdAmount.className = "col-amount";
@@ -436,8 +436,8 @@
     });
     tdRemove.appendChild(removeBtn);
 
-    tr.appendChild(tdName);
     tr.appendChild(tdCat);
+    tr.appendChild(tdName);
     tr.appendChild(tdAmount);
     tr.appendChild(tdBaker);
     tr.appendChild(tdRemove);
