@@ -10,10 +10,10 @@
   /* page-specific tweaks */
   .col-remove { text-align: right; }
   @media (min-width: 561px) {
-    .col-name { width: 36%; }
-    .col-category { width: 18%; }
-    .col-amount, .col-baker { width: 16%; }
-    .col-remove { width: 8%; }
+    .col-name { width: 38%; }
+    .col-category { width: 31%; } /* fits the longest label, "Sonstiges flüssig", without truncation even at the 561px breakpoint (table-layout:fixed makes this exact) */
+    .col-amount, .col-baker { width: 12%; }
+    .col-remove { width: 7%; }
   }
   table.ingredients tbody tr.hint-row {
     border-top: none;

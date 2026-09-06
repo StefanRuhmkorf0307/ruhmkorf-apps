@@ -210,6 +210,15 @@ table.ingredients {
   font-size: 0.92rem;
 }
 
+@media (min-width: 561px) {
+  table.ingredients {
+    /* Fixed layout so the declared column widths (see the page-specific
+       .col-* rules) are honored exactly - "auto" layout only treats them
+       as hints and was truncating the longest category label. */
+    table-layout: fixed;
+  }
+}
+
 table.ingredients th {
   text-align: left;
   font-size: 0.78rem;
