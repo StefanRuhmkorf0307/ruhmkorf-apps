@@ -60,6 +60,14 @@
     border-radius: 6px;
     font-size: 0.95rem;
     background: var(--color-surface);
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 220px;
+  }
+  @media (max-width: 560px) {
+    .scale-option select {
+      flex-basis: 100%;
+    }
   }
   .error-text {
     color: var(--color-danger);
@@ -198,23 +206,52 @@
     en: { flour: "Flour", water: "Water", liquid: "Other (liquid)", starter: "Starter", salt: "Salt", other: "Other (solid)" }
   };
 
+  // Starter/Anstellgut suggestions describe a flour:water ratio (by weight).
+  // Picking one doesn't just fill the text field - it also sets that row's
+  // flourPct/waterPct to match (see nameInput's "input" handler below), so
+  // the hydration/baker's-% math reflects the chosen ratio instead of
+  // always assuming a 1:1 (100% hydration) starter.
+  var STARTER_RATIOS = [
+    { hydration: 50,  de: "Anstellgut 50% Hydration (fest, ca. 2:1 Mehl:Wasser)",        en: "Starter 50% hydration (stiff, ~2:1 flour:water)" },
+    { hydration: 65,  de: "Anstellgut 65% Hydration (Lievito Madre, ca. 3:2 Mehl:Wasser)", en: "Starter 65% hydration (lievito madre style, ~3:2 flour:water)" },
+    { hydration: 80,  de: "Anstellgut 80% Hydration (ca. 5:4 Mehl:Wasser)",              en: "Starter 80% hydration (~5:4 flour:water)" },
+    { hydration: 100, de: "Anstellgut 100% Hydration (1:1 Mehl:Wasser)",                 en: "Starter 100% hydration (1:1 flour:water)" },
+    { hydration: 125, de: "Anstellgut 125% Hydration (flüssig, ca. 4:5 Mehl:Wasser)",    en: "Starter 125% hydration (liquid, ~4:5 flour:water)" }
+  ];
+
+  function starterRatioPercents(hydration) {
+    var flour = 100 / (100 + hydration) * 100;
+    var water = hydration / (100 + hydration) * 100;
+    return { flour: flour, water: water };
+  }
+
+  // Look up a starter suggestion by its exact displayed label (current
+  // language), so selecting one from the datalist can set flourPct/waterPct.
+  function findStarterRatioByLabel(label) {
+    for (var i = 0; i < STARTER_RATIOS.length; i++) {
+      if (STARTER_RATIOS[i][state.lang] === label) return STARTER_RATIOS[i];
+    }
+    return null;
+  }
+
   // Suggestions shown in the free-text description field, filtered to the
   // ingredient's currently selected category. Still a free-text input -
-  // these are offered via <datalist>, not enforced.
+  // these are offered via <datalist>, not enforced. Water has none: there's
+  // nothing to disambiguate, plain "Wasser"/"Water" is already the value.
   var NAME_SUGGESTIONS = {
     de: {
       flour: ["Weizenmehl Type 405", "Weizenmehl Type 550", "Weizenmehl Type 812", "Weizenmehl Type 1050", "Roggenmehl Type 997", "Roggenmehl Type 1150", "Dinkelmehl Type 630", "Dinkelmehl Type 1050", "Vollkornmehl (Weizen)", "Vollkornmehl (Roggen)", "Emmermehl", "Einkornmehl"],
-      water: ["Wasser", "Wasser (kalt)", "Wasser (lauwarm)", "Eiswasser"],
+      water: [],
       liquid: ["Milch", "Buttermilch", "Joghurt", "Kefir", "Sahne", "Gemüsebrühe", "Bier", "Öl", "Honig (flüssig)", "Molke"],
-      starter: ["Anstellgut (100% Hydration)", "Anstellgut (50% Hydration, fest)", "Lievito Madre", "Weizensauerteig", "Roggensauerteig", "Hefewasser"],
+      starter: STARTER_RATIOS.map(function (r) { return r.de; }),
       salt: ["Salz", "Meersalz", "Jodsalz"],
       other: ["Brauner Zucker", "Weißer Zucker", "Honig (fest/kristallisiert)", "Butter", "Sonnenblumenkerne", "Leinsamen", "Walnüsse", "Trockenhefe", "Frischhefe", "Gewürze"]
     },
     en: {
       flour: ["Bread flour (Type 550)", "All-purpose flour (Type 405)", "Whole wheat flour", "Rye flour", "Spelt flour", "Einkorn flour", "Emmer flour"],
-      water: ["Water", "Cold water", "Lukewarm water", "Ice water"],
+      water: [],
       liquid: ["Milk", "Buttermilk", "Yogurt", "Kefir", "Cream", "Vegetable broth", "Beer", "Oil", "Honey (liquid)", "Whey"],
-      starter: ["Starter (100% hydration)", "Starter (50% hydration, stiff)", "Lievito madre", "Wheat sourdough starter", "Rye sourdough starter", "Yeast water"],
+      starter: STARTER_RATIOS.map(function (r) { return r.en; }),
       salt: ["Salt", "Sea salt", "Iodized salt"],
       other: ["Brown sugar", "White sugar", "Honey (solid/crystallized)", "Butter", "Sunflower seeds", "Flax seeds", "Walnuts", "Dry yeast", "Fresh yeast", "Spices"]
     }
@@ -289,7 +326,7 @@
   var EXAMPLE_RECIPE = [
     { name: "Weizenmehl Type 405", category: "flour",   amount: 450, flourPct: 100, waterPct: 0 },
     { name: "Wasser", category: "water", amount: 450, flourPct: 0, waterPct: 100 },
-    { name: "Anstellgut (100% Hydration)", category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
+    { name: "Anstellgut 100% Hydration (1:1 Mehl:Wasser)", category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
     { name: "Salz", category: "salt", amount: 21, flourPct: 0, waterPct: 0 },
     { name: "Brauner Zucker", category: "other", amount: 45, flourPct: 0, waterPct: 0 }
   ];
@@ -420,23 +457,47 @@
     var nameInput = document.createElement("input");
     nameInput.type = "text";
     nameInput.value = ing.name;
-    nameInput.addEventListener("input", function () { ing.name = nameInput.value; scheduleSave(); updateScaleIngredientOptions(); });
+    nameInput.addEventListener("input", function () {
+      ing.name = nameInput.value;
+
+      // For starter/Anstellgut, picking one of the flour:water ratio
+      // suggestions also sets that row's flourPct/waterPct so the
+      // hydration/baker's-% math actually reflects the chosen ratio -
+      // otherwise the number in the name would be purely cosmetic.
+      if (ing.category === "starter") {
+        var ratio = findStarterRatioByLabel(nameInput.value);
+        if (ratio) {
+          var pct = starterRatioPercents(ratio.hydration);
+          ing.flourPct = pct.flour;
+          ing.waterPct = pct.water;
+          refreshHintRow(ing);
+        }
+      }
+
+      scheduleSave();
+      updateScaleIngredientOptions();
+      renderSummaryAndBakerPercents();
+    });
     tdName.appendChild(nameInput);
 
     // Free-text field with suggestions that match the currently selected
     // category (re-created on every render, so a category change instantly
     // swaps the suggestion list via the full re-render it already triggers).
-    var datalistId = "name-suggestions-" + ing._id;
-    var datalist = document.createElement("datalist");
-    datalist.id = datalistId;
+    // Categories with no meaningful suggestions (e.g. water) simply get no
+    // "list" attribute, so no dropdown affordance is shown at all.
     var suggestions = (NAME_SUGGESTIONS[state.lang] && NAME_SUGGESTIONS[state.lang][ing.category]) || [];
-    suggestions.forEach(function (s) {
-      var opt = document.createElement("option");
-      opt.value = s;
-      datalist.appendChild(opt);
-    });
-    nameInput.setAttribute("list", datalistId);
-    tdName.appendChild(datalist);
+    if (suggestions.length > 0) {
+      var datalistId = "name-suggestions-" + ing._id;
+      var datalist = document.createElement("datalist");
+      datalist.id = datalistId;
+      suggestions.forEach(function (s) {
+        var opt = document.createElement("option");
+        opt.value = s;
+        datalist.appendChild(opt);
+      });
+      nameInput.setAttribute("list", datalistId);
+      tdName.appendChild(datalist);
+    }
 
     var tdAmount = document.createElement("td");
     tdAmount.className = "col-amount";
@@ -481,16 +542,47 @@
     return tr;
   }
 
-  function renderHintRow(ing) {
+  // Starter/Anstellgut can have a different flour:water ratio per row (see
+  // the starter-ratio suggestions above), so its hint reflects that row's
+  // actual flourPct/waterPct instead of one fixed category-wide assumption.
+  function computeHintText(ing) {
     if (CATEGORIES_WITH_HINT.indexOf(ing.category) === -1) return null;
+    if (ing.category === "starter") {
+      var flourPct = Number(ing.flourPct) || 0;
+      var waterPct = Number(ing.waterPct) || 0;
+      var hydrationPct = flourPct > 0 ? (waterPct / flourPct * 100) : null;
+      if (state.lang === "de") {
+        return "Angenommen: " + fmt(flourPct, 1) + "% Mehl, " + fmt(waterPct, 1) + "% Wasser" +
+          (hydrationPct !== null ? " (Hydration " + fmt(hydrationPct, 0) + "%)" : "");
+      }
+      return "Assumed: " + fmt(flourPct, 1) + "% flour, " + fmt(waterPct, 1) + "% water" +
+        (hydrationPct !== null ? " (" + fmt(hydrationPct, 0) + "% hydration)" : "");
+    }
+    return t("hint" + ing.category.charAt(0).toUpperCase() + ing.category.slice(1));
+  }
+
+  function renderHintRow(ing) {
+    var text = computeHintText(ing);
+    if (text === null) return null;
     var tr = document.createElement("tr");
     tr.className = "hint-row";
     tr.dataset.hintFor = ing._id;
     var td = document.createElement("td");
     td.colSpan = 5;
-    td.textContent = "ⓘ " + t("hint" + ing.category.charAt(0).toUpperCase() + ing.category.slice(1));
+    td.textContent = "ⓘ " + text;
     tr.appendChild(td);
     return tr;
+  }
+
+  // Lightweight update used while typing in the description field: only
+  // touches the hint row's text, so it doesn't rebuild the row and steal
+  // focus/cursor position out of the input the person is still typing in.
+  function refreshHintRow(ing) {
+    var tr = document.querySelector('#ingredients-body tr.hint-row[data-hint-for="' + ing._id + '"]');
+    if (!tr) return;
+    var text = computeHintText(ing);
+    var td = tr.querySelector("td");
+    if (td && text !== null) td.textContent = "ⓘ " + text;
   }
 
   function renderSummaryAndBakerPercents() {
