@@ -366,27 +366,81 @@ table.ingredients .col-amount input {
 }
 
 @media (max-width: 560px) {
+  /* Header can overflow on narrow phones (~320px) when the brand text and
+     the language toggle compete for one row - let it wrap instead. */
+  header.site-header {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  /* Force a real block/grid context: without this, td elements keep their
+     native table-cell sizing (shrink-to-fit) even though the row above them
+     is display:grid, which made name/category fields render only ~25-40px
+     wide and unreadable. */
+  table.ingredients,
+  table.ingredients tbody {
+    display: block;
+    width: 100%;
+  }
   table.ingredients thead {
     display: none;
   }
   table.ingredients tbody tr {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4px 8px;
-    padding: 10px 0;
+    gap: 8px 10px;
+    padding: 12px 0;
   }
   table.ingredients td {
+    display: block;
+    width: auto;
     padding: 2px 0;
   }
   table.ingredients td[data-label]::before {
     content: attr(data-label);
     display: block;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     color: var(--color-text-muted);
     text-transform: uppercase;
+  }
+  /* Name and category need the full row width to stay readable; amount and
+     baker's-% are short values and can share a row. */
+  table.ingredients td.col-name,
+  table.ingredients td.col-category {
+    grid-column: 1 / -1;
   }
   table.ingredients td.col-remove {
     grid-column: 1 / -1;
     text-align: right;
+  }
+  /* 16px stops iOS Safari from auto-zooming the page when a field is
+     focused, and gives every input/select/button a comfortable touch size. */
+  table.ingredients input[type="text"],
+  table.ingredients input[type="number"],
+  table.ingredients select {
+    font-size: 16px;
+    padding: 10px 10px;
+  }
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+  /* Same iOS-zoom fix for the other numeric inputs on the page (target
+     weight, scaling inputs). */
+  .target-row input[type="number"],
+  .scale-option input[type="number"],
+  .scale-option select {
+    font-size: 16px;
+  }
+  .actions-row .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  .target-row,
+  .scale-option {
+    align-items: stretch;
+  }
+  .target-row input[type="number"] {
+    flex: 1 1 100px;
   }
 }

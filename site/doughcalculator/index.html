@@ -8,10 +8,13 @@
 <link rel="stylesheet" href="../assets/style.css">
 <style>
   /* page-specific tweaks */
-  .col-name { width: 26%; }
-  .col-category { width: 28%; }
-  .col-amount, .col-baker { width: 16%; }
-  .col-remove { width: 8%; text-align: right; }
+  .col-remove { text-align: right; }
+  @media (min-width: 561px) {
+    .col-name { width: 26%; }
+    .col-category { width: 28%; }
+    .col-amount, .col-baker { width: 16%; }
+    .col-remove { width: 8%; }
+  }
   table.ingredients tbody tr.hint-row {
     border-top: none;
   }
