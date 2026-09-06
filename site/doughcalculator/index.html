@@ -212,12 +212,17 @@
   // the hydration/baker's-% math reflects the chosen ratio instead of
   // always assuming a 1:1 (100% hydration) starter.
   var STARTER_RATIOS = [
-    { hydration: 50,  de: "Anstellgut 50% Hydration (fest, ca. 2:1 Mehl:Wasser)",        en: "Starter 50% hydration (stiff, ~2:1 flour:water)" },
-    { hydration: 65,  de: "Anstellgut 65% Hydration (Lievito Madre, ca. 3:2 Mehl:Wasser)", en: "Starter 65% hydration (lievito madre style, ~3:2 flour:water)" },
-    { hydration: 80,  de: "Anstellgut 80% Hydration (ca. 5:4 Mehl:Wasser)",              en: "Starter 80% hydration (~5:4 flour:water)" },
-    { hydration: 100, de: "Anstellgut 100% Hydration (1:1 Mehl:Wasser)",                 en: "Starter 100% hydration (1:1 flour:water)" },
-    { hydration: 125, de: "Anstellgut 125% Hydration (flüssig, ca. 4:5 Mehl:Wasser)",    en: "Starter 125% hydration (liquid, ~4:5 flour:water)" }
+    { flourParts: 2, waterParts: 1 },
+    { flourParts: 3, waterParts: 2 },
+    { flourParts: 5, waterParts: 4 },
+    { flourParts: 1, waterParts: 1 },
+    { flourParts: 4, waterParts: 5 }
   ];
+  STARTER_RATIOS.forEach(function (r) {
+    r.hydration = r.waterParts / r.flourParts * 100;
+    r.de = r.flourParts + ":" + r.waterParts + " Mehl:Wasser";
+    r.en = r.flourParts + ":" + r.waterParts + " flour:water";
+  });
 
   function starterRatioPercents(hydration) {
     var flour = 100 / (100 + hydration) * 100;
