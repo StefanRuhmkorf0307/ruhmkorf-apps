@@ -296,6 +296,11 @@
   // Categories whose flour/water assumption is not obvious from the name alone
   // get a small hint shown under the category dropdown (see hint*-keys below).
   var CATEGORIES_WITH_HINT = ["liquid", "starter", "other"];
+  // These categories don't get a description field at all - their name is
+  // implied by the category itself (Mehl/Wasser/Salz), so there's nothing
+  // meaningful to type in.
+  var NO_DESCRIPTION_CATEGORIES = ["water", "flour", "salt"];
+  function hasNoDescription(category) { return NO_DESCRIPTION_CATEGORIES.indexOf(category) !== -1; }
 
   var CATEGORY_LABELS = {
     de: { flour: "Mehl", water: "Wasser", liquid: "Sonstiges flüssig", starter: "Anstellgut", salt: "Salz", other: "Sonstiges fest" },
@@ -413,14 +418,14 @@
     }
   };
 
-  var STORAGE_KEY = "doughcalculator.recipe.v5"; // bumped: water's description is now always empty (no more "Wasser" text)
+  var STORAGE_KEY = "doughcalculator.recipe.v6"; // bumped: flour's and salt's descriptions are now always empty too
   var LANG_KEY = "doughcalculator.lang";
 
   var EXAMPLE_RECIPE = [
-    { name: "Weizenmehl Type 405", category: "flour",   amount: 750, flourPct: 100, waterPct: 0 },
+    { name: "", category: "flour",   amount: 750, flourPct: 100, waterPct: 0 },
     { name: "", category: "water", amount: 450, flourPct: 0, waterPct: 100 },
     { name: "1:1 Mehl:Wasser", category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
-    { name: "Salz", category: "salt", amount: 21, flourPct: 0, waterPct: 0 },
+    { name: "", category: "salt", amount: 21, flourPct: 0, waterPct: 0 },
     { name: "", category: "liquid", amount: 0, flourPct: 0, waterPct: 100 },
     { name: "", category: "other", amount: 0, flourPct: 0, waterPct: 0 }
   ];
@@ -563,9 +568,9 @@
       var defaults = CATEGORY_DEFAULTS[ing.category] || { flour: 0, water: 0 };
       ing.flourPct = defaults.flour;
       ing.waterPct = defaults.water;
-      // Water has no description of its own - it's always just "Wasser",
-      // so drop any leftover text from a previous category.
-      if (ing.category === "water") ing.name = "";
+      // These categories have no description field of their own - drop any
+      // leftover text from a previous category.
+      if (hasNoDescription(ing.category)) ing.name = "";
       scheduleSave();
       render();
     });
@@ -575,9 +580,9 @@
     tdName.className = "col-name";
     tdName.dataset.label = t("colName");
 
-    // Water's description is always empty and can't hold anything useful,
-    // so it gets no input field at all - just an empty cell.
-    if (ing.category !== "water") {
+    // Mehl, Wasser and Salz have no meaningful description of their own,
+    // so they get no input field at all - just an empty cell.
+    if (!hasNoDescription(ing.category)) {
       var nameWrap = document.createElement("div");
       nameWrap.className = "name-field-wrap";
 
@@ -774,12 +779,25 @@
     render();
   }
 
-  var SCALE_STEPS = [-50, -1, 1, 50];
+  // Step sizes scale with the current value, so a near-zero amount can still
+  // be nudged by 0.1g while a >=1000g dough/bread total moves in fast 100g
+  // (and 50g) jumps instead of forever clicking +1.
+  function stepSizesForValue(value) {
+    var v = Math.abs(Number(value) || 0);
+    if (v < 10) return { small: 0.1, big: 1 };
+    if (v < 100) return { small: 1, big: 10 };
+    if (v < 1000) return { small: 10, big: 50 };
+    return { small: 50, big: 100 };
+  }
   // Chevrons instead of the raw step numbers on the buttons themselves - the
-  // magnitude (50 vs 1) is conveyed by double vs single chevron, the
+  // magnitude (big vs small) is conveyed by double vs single chevron, the
   // direction by which way they point. title/aria-label keep the exact
   // numeric step available to screen readers and as a hover tooltip.
-  var STEP_ICONS = { "-50": "«", "-1": "‹", "1": "›", "50": "»" };
+  function formatStepLabel(delta) {
+    var abs = Math.abs(delta);
+    var num = abs < 1 ? abs.toFixed(1) : String(abs);
+    return (delta > 0 ? "+" : "-") + num + " g";
+  }
 
   function renderScaleList() {
     var container = document.getElementById("scale-list");
@@ -817,34 +835,42 @@
       var controls = document.createElement("div");
       controls.className = "scale-row-controls";
 
+      var steps = stepSizesForValue(value);
+      var fine = steps.small < 1;
+
       // Value field first, then all four step buttons together right behind
       // it (not flanking it on both sides).
       var valueInput = document.createElement("input");
       valueInput.type = "number";
       valueInput.className = "scale-value-input";
       valueInput.min = "0";
-      valueInput.step = "1";
-      valueInput.value = Math.round(value);
+      valueInput.step = fine ? "0.1" : String(steps.small);
+      valueInput.value = fine ? value.toFixed(1) : Math.round(value);
       valueInput.addEventListener("change", function () {
         var v = parseFloat(valueInput.value);
         if (isFinite(v) && v > 0) {
           onApply(v);
         } else {
-          valueInput.value = Math.round(value);
+          valueInput.value = fine ? value.toFixed(1) : Math.round(value);
         }
       });
       controls.appendChild(valueInput);
 
-      SCALE_STEPS.forEach(function (delta) {
+      [
+        { delta: -steps.big, icon: "«" },
+        { delta: -steps.small, icon: "‹" },
+        { delta: steps.small, icon: "›" },
+        { delta: steps.big, icon: "»" }
+      ].forEach(function (stepDef) {
         var btn = document.createElement("button");
         btn.type = "button";
         btn.className = "scale-step-btn";
-        btn.textContent = STEP_ICONS[String(delta)];
-        var deltaLabel = (delta > 0 ? "+" : "") + delta;
+        btn.textContent = stepDef.icon;
+        var deltaLabel = formatStepLabel(stepDef.delta);
         btn.title = deltaLabel;
         btn.setAttribute("aria-label", deltaLabel);
         btn.addEventListener("click", function () {
-          onApply(Math.max(value + delta, 0.1));
+          onApply(Math.max(Math.round((value + stepDef.delta) * 10) / 10, 0.1));
         });
         controls.appendChild(btn);
       });
@@ -859,9 +885,9 @@
     state.ingredients.forEach(function (ing, idx) {
       var catLabel = (CATEGORY_LABELS[state.lang] && CATEGORY_LABELS[state.lang][ing.category]) || "";
       var label;
-      if (ing.category === "water") {
-        // Water's description is always empty and isn't shown here -
-        // "Wasser · Wasser" would just be a redundant duplicate.
+      if (hasNoDescription(ing.category)) {
+        // No description to show for these - just the category name, no
+        // redundant "Mehl · Mehl" style duplicate.
         label = catLabel || t("colName");
       } else {
         var desc = ing.name || ("(" + t("colName") + ")");
