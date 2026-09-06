@@ -10,8 +10,8 @@
   /* page-specific tweaks */
   .col-remove { text-align: right; }
   @media (min-width: 561px) {
-    .col-name { width: 26%; }
-    .col-category { width: 28%; }
+    .col-name { width: 36%; }
+    .col-category { width: 18%; }
     .col-amount, .col-baker { width: 16%; }
     .col-remove { width: 8%; }
   }
@@ -36,6 +36,50 @@
       grid-column: 1 / -1;
     }
   }
+  /* Custom suggestion dropdown for the description field. A native
+     <datalist> filters its options by whatever's already typed, which we
+     don't want - the full, unfiltered suggestion list for the selected
+     category should stay visible regardless of what text is in the field. */
+  .name-field-wrap {
+    position: relative;
+  }
+  .name-suggest-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    margin-top: 4px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(44, 35, 27, 0.16);
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .name-suggest-list[hidden] {
+    display: none;
+  }
+  .name-suggest-list button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 9px 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.92rem;
+    color: var(--color-text);
+    font-family: inherit;
+  }
+  .name-suggest-list button + button {
+    border-top: 1px solid var(--color-border);
+  }
+  .name-suggest-list button:hover,
+  .name-suggest-list button:focus {
+    background: var(--color-bg);
+  }
+
   .scale-options {
     display: flex;
     flex-direction: column;
@@ -99,7 +143,7 @@
 
     <section class="card">
       <h2 data-i18n="ingredientsHeading">Beschreibungen</h2>
-      <div style="overflow-x:auto;">
+      <div>
         <table class="ingredients" id="ingredients-table">
           <thead>
             <tr>
@@ -114,7 +158,7 @@
         </table>
       </div>
       <div class="actions-row">
-        <button type="button" class="btn" id="add-ingredient" data-i18n="addIngredient">+ Beschreibung hinzufügen</button>
+        <button type="button" class="btn" id="add-ingredient" data-i18n="addIngredient">+ Zutat hinzufügen</button>
         <button type="button" class="btn" id="reset-example" data-i18n="loadExample">Beispielrezept laden</button>
         <button type="button" class="btn" id="clear-all" data-i18n="clearAll">Alles löschen</button>
       </div>
@@ -272,7 +316,7 @@
       hintLiquid: "Angenommen: 0% Mehl, 100% Wasser",
       hintStarter: "Angenommen: 50% Mehl, 50% Wasser (Hydration 100%)",
       hintOther: "Angenommen: 0% Mehl, 0% Wasser (kein Beitrag zur Hydration)",
-      addIngredient: "+ Beschreibung hinzufügen",
+      addIngredient: "+ Zutat hinzufügen",
       loadExample: "Beispielrezept laden",
       clearAll: "Alles löschen",
       summaryHeading: "Übersicht",
@@ -302,7 +346,7 @@
       hintLiquid: "Assumed: 0% flour, 100% water",
       hintStarter: "Assumed: 50% flour, 50% water (100% hydration)",
       hintOther: "Assumed: 0% flour, 0% water (no contribution to hydration)",
-      addIngredient: "+ Add description",
+      addIngredient: "+ Add ingredient",
       loadExample: "Load example recipe",
       clearAll: "Clear all",
       summaryHeading: "Overview",
@@ -325,15 +369,16 @@
     }
   };
 
-  var STORAGE_KEY = "doughcalculator.recipe.v2"; // bumped: v1 could contain a stale recipe with Roggenmehl
+  var STORAGE_KEY = "doughcalculator.recipe.v4"; // bumped: v3 was missing the "Sonstiges fluessig"/"Sonstiges fest" 0g placeholder rows
   var LANG_KEY = "doughcalculator.lang";
 
   var EXAMPLE_RECIPE = [
-    { name: "Weizenmehl Type 405", category: "flour",   amount: 450, flourPct: 100, waterPct: 0 },
+    { name: "Weizenmehl Type 405", category: "flour",   amount: 750, flourPct: 100, waterPct: 0 },
     { name: "Wasser", category: "water", amount: 450, flourPct: 0, waterPct: 100 },
-    { name: "Anstellgut 100% Hydration (1:1 Mehl:Wasser)", category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
+    { name: "1:1 Mehl:Wasser", category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
     { name: "Salz", category: "salt", amount: 21, flourPct: 0, waterPct: 0 },
-    { name: "Brauner Zucker", category: "other", amount: 45, flourPct: 0, waterPct: 0 }
+    { name: "", category: "liquid", amount: 0, flourPct: 0, waterPct: 100 },
+    { name: "", category: "other", amount: 0, flourPct: 0, waterPct: 0 }
   ];
 
   var state = {
@@ -430,6 +475,30 @@
     });
   }
 
+  // Shared by the description field's "input" event and by clicking a
+  // suggestion, so both paths behave identically.
+  function applyNameChange(ing, nameInput) {
+    ing.name = nameInput.value;
+
+    // For starter/Anstellgut, picking one of the flour:water ratio
+    // suggestions also sets that row's flourPct/waterPct so the
+    // hydration/baker's-% math actually reflects the chosen ratio -
+    // otherwise the number in the name would be purely cosmetic.
+    if (ing.category === "starter") {
+      var ratio = findStarterRatioByLabel(nameInput.value);
+      if (ratio) {
+        var pct = starterRatioPercents(ratio.hydration);
+        ing.flourPct = pct.flour;
+        ing.waterPct = pct.water;
+        refreshHintRow(ing);
+      }
+    }
+
+    scheduleSave();
+    updateScaleIngredientOptions();
+    renderSummaryAndBakerPercents();
+  }
+
   function renderRow(ing, totals) {
     var tr = document.createElement("tr");
     tr.dataset.id = ing._id;
@@ -459,50 +528,53 @@
     var tdName = document.createElement("td");
     tdName.className = "col-name";
     tdName.dataset.label = t("colName");
+
+    var nameWrap = document.createElement("div");
+    nameWrap.className = "name-field-wrap";
+
     var nameInput = document.createElement("input");
     nameInput.type = "text";
+    nameInput.autocomplete = "off";
     nameInput.value = ing.name;
-    nameInput.addEventListener("input", function () {
-      ing.name = nameInput.value;
+    nameInput.addEventListener("input", function () { applyNameChange(ing, nameInput); });
+    nameWrap.appendChild(nameInput);
 
-      // For starter/Anstellgut, picking one of the flour:water ratio
-      // suggestions also sets that row's flourPct/waterPct so the
-      // hydration/baker's-% math actually reflects the chosen ratio -
-      // otherwise the number in the name would be purely cosmetic.
-      if (ing.category === "starter") {
-        var ratio = findStarterRatioByLabel(nameInput.value);
-        if (ratio) {
-          var pct = starterRatioPercents(ratio.hydration);
-          ing.flourPct = pct.flour;
-          ing.waterPct = pct.water;
-          refreshHintRow(ing);
-        }
-      }
-
-      scheduleSave();
-      updateScaleIngredientOptions();
-      renderSummaryAndBakerPercents();
-    });
-    tdName.appendChild(nameInput);
-
-    // Free-text field with suggestions that match the currently selected
-    // category (re-created on every render, so a category change instantly
-    // swaps the suggestion list via the full re-render it already triggers).
-    // Categories with no meaningful suggestions (e.g. water) simply get no
-    // "list" attribute, so no dropdown affordance is shown at all.
+    // Custom suggestion dropdown (not a native <datalist>) filtered only by
+    // the currently selected category - never by what's already typed, so
+    // the full list stays available even once there's text in the field.
+    // Categories with no meaningful suggestions (e.g. water) get no
+    // dropdown at all.
     var suggestions = (NAME_SUGGESTIONS[state.lang] && NAME_SUGGESTIONS[state.lang][ing.category]) || [];
     if (suggestions.length > 0) {
-      var datalistId = "name-suggestions-" + ing._id;
-      var datalist = document.createElement("datalist");
-      datalist.id = datalistId;
+      var suggestList = document.createElement("div");
+      suggestList.className = "name-suggest-list";
+      suggestList.hidden = true;
       suggestions.forEach(function (s) {
-        var opt = document.createElement("option");
-        opt.value = s;
-        datalist.appendChild(opt);
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = s;
+        // mousedown (fired, and prevented, before the input would blur) lets
+        // us fill the value without the browser yanking focus away first.
+        btn.addEventListener("mousedown", function (e) {
+          e.preventDefault();
+          nameInput.value = s;
+          applyNameChange(ing, nameInput);
+          suggestList.hidden = true;
+          nameInput.focus();
+        });
+        suggestList.appendChild(btn);
       });
-      nameInput.setAttribute("list", datalistId);
-      tdName.appendChild(datalist);
+      nameInput.addEventListener("focus", function () { suggestList.hidden = false; });
+      nameInput.addEventListener("click", function () { suggestList.hidden = false; });
+      nameInput.addEventListener("blur", function () {
+        // Small delay so a click on a suggestion (mousedown -> click) can
+        // still land before the list disappears.
+        setTimeout(function () { suggestList.hidden = true; }, 150);
+      });
+      nameWrap.appendChild(suggestList);
     }
+
+    tdName.appendChild(nameWrap);
 
     var tdAmount = document.createElement("td");
     tdAmount.className = "col-amount";
@@ -510,7 +582,7 @@
     var amountInput = document.createElement("input");
     amountInput.type = "number";
     amountInput.min = "0";
-    amountInput.step = "0.1";
+    amountInput.step = "1";
     amountInput.value = ing.amount;
     amountInput.addEventListener("input", function () {
       ing.amount = amountInput.value === "" ? 0 : parseFloat(amountInput.value);
@@ -686,6 +758,19 @@
     if (document.hidden) flushSave();
   });
   window.addEventListener("pagehide", flushSave);
+
+  // Close any open description-suggestion dropdown when clicking elsewhere,
+  // or on Escape (the input's own "blur" handler covers tabbing away).
+  document.addEventListener("click", function (e) {
+    document.querySelectorAll(".name-suggest-list:not([hidden])").forEach(function (list) {
+      if (!list.parentElement.contains(e.target)) list.hidden = true;
+    });
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      document.querySelectorAll(".name-suggest-list:not([hidden])").forEach(function (list) { list.hidden = true; });
+    }
+  });
 
   document.getElementById("apply-scale").addEventListener("click", function () {
     var errEl = document.getElementById("scale-error");
