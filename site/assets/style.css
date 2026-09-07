@@ -421,6 +421,22 @@ table.ingredients .col-amount input::-webkit-inner-spin-button {
     font-size: 1.1rem;
   }
 
+  /* Mehlgewicht/Wassergewicht get noticeably longer explanations than the
+     other tiles (the flour/water assumptions live there, see statFlourExplain
+     /statWaterExplain) - stack them full-width instead of squeezing both
+     into half a row, and undo the half-width font shrink above since each
+     tile now has the full row to itself again. */
+  .summary-pair-flour-water {
+    flex-direction: column;
+  }
+  .summary-pair-flour-water .summary-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+  }
+  .summary-pair-flour-water .summary-value {
+    font-size: 1.3rem;
+  }
+
   /* Mobile keeps the same row-based table layout as the wide view, just
      narrower - no separate stacked/card layout. The Zusatzinfo column is
      the one column that can be dropped without losing anything essential
