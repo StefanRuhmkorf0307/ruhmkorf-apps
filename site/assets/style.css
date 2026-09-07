@@ -2,28 +2,30 @@
    (Sammelseite + DoughCalculator + future DoughPilot Web) */
 
 :root {
-  --color-bg: #faf6f0;
+  --color-bg: #f7f4ea;
   --color-surface: #ffffff;
-  --color-border: #e6ddd0;
-  --color-text: #2c231b;
-  --color-text-muted: #6b5f52;
-  --color-primary: #a9601f;
-  --color-primary-dark: #834b17;
-  --color-primary-contrast: #ffffff;
-  --color-accent: #7a8c5b;
-  --color-danger: #b3452f;
+  --color-border: #e2ddcc;
+  --color-text: #1f2c23;
+  --color-text-muted: #5c6b5f;
+  --color-primary: #2d4635;
+  --color-primary-dark: #24382a;
+  --color-primary-contrast: #f7f4ea;
+  /* Gold ist der Akzent, nicht die Grundfarbe - sparsam einsetzen, sonst
+     kippt die Seite ins Dekorative. Im Zeichen tragt es den Laib. */
+  --color-accent: #b8862c;
+  --color-danger: #a8412c;
   /* Flaechen, die sich nicht allein aus den Farben oben ergeben: der
      Teaser-Verlauf, die Badge und die beiden Hover-Toene. Als Variablen
      gefuehrt, damit der Dark-Mode-Block unten sie mit umschalten kann,
      statt dass irgendwo ein heller Farbwert stehen bleibt. */
-  --color-teaser-top: #fdf6ec;
-  --color-teaser-border: #e2cfae;
-  --color-badge-bg: #f1ead9;
-  --color-btn-hover: #f4ede2;
-  --color-danger-hover: #fbeceb;
+  --color-teaser-top: #f2efdf;
+  --color-teaser-border: #d8d0b4;
+  --color-badge-bg: #eae6d5;
+  --color-btn-hover: #f1eee2;
+  --color-danger-hover: #f8eae7;
   --radius: 10px;
-  --shadow: 0 1px 3px rgba(44, 35, 27, 0.08), 0 1px 2px rgba(44, 35, 27, 0.06);
-  --shadow-hover: 0 4px 14px rgba(44, 35, 27, 0.12);
+  --shadow: 0 1px 3px rgba(31, 44, 35, 0.08), 0 1px 2px rgba(31, 44, 35, 0.06);
+  --shadow-hover: 0 4px 14px rgba(31, 44, 35, 0.12);
   --max-width: 880px;
   font-size: 16px;
   /* Laesst Scrollbalken, Zahlenfelder und Auswahllisten im Dark Mode
@@ -32,27 +34,31 @@
   color-scheme: light dark;
 }
 
-/* Dunkle Variante, automatisch nach Systemeinstellung. Bewusst warme
-   Braun- statt Neutralgrautoene, damit die Seite in beiden Modi dieselbe
-   Anmutung behaelt. Die Markenfarbe wird aufgehellt: #a9601f traegt auf
-   hellem Grund, saeuft auf dunklem aber ab. */
+/* Dunkle Variante, automatisch nach Systemeinstellung. Statt neutralem Grau
+   ein sehr dunkles Gruen, damit die Seite in beiden Modi dieselbe Anmutung
+   behaelt. Die Rollen von Gruen und Gold tauschen dabei - siehe Kommentar
+   unten. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #1c1712;
-    --color-surface: #262019;
-    --color-border: #3b322a;
-    --color-text: #f0e7dc;
-    --color-text-muted: #b3a596;
-    --color-primary: #d9843c;
-    --color-primary-dark: #e8a463;
-    --color-primary-contrast: #1c1712;
-    --color-accent: #9bb06f;
-    --color-danger: #e2705a;
-    --color-teaser-top: #33271b;
-    --color-teaser-border: #4d3b26;
-    --color-badge-bg: #3b322a;
-    --color-btn-hover: #322a22;
-    --color-danger-hover: #3d2823;
+    --color-bg: #141c17;
+    --color-surface: #1d2821;
+    --color-border: #324439;
+    --color-text: #edf1e8;
+    --color-text-muted: #a2b3a6;
+    /* Rollentausch gegenueber hell: Dort ist Dunkelgruen die Akzentflaeche
+       (aktiver Umschalter, Kachel im Kopf) mit hellem Text darauf. Auf
+       dunkelgruenem Grund haette dieselbe Farbe keinen Kontrast mehr,
+       deshalb uebernimmt hier Gold diese Rolle - genau wie im Zeichen. */
+    --color-primary: #d2a04a;
+    --color-primary-dark: #e3ba71;
+    --color-primary-contrast: #141c17;
+    --color-accent: #8fb39a;
+    --color-danger: #e0806c;
+    --color-teaser-top: #23301f;
+    --color-teaser-border: #3d4a2e;
+    --color-badge-bg: #324439;
+    --color-btn-hover: #26332b;
+    --color-danger-hover: #3a2723;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.5);
   }
@@ -125,10 +131,22 @@ img.logo-mark {
   background: none;
 }
 
+/* Wortmarke: fettes "Dough" plus leichtes Suffix. Das bindet die Produkte
+   (DoughCalculator, spaeter DoughPilot) sichtbar zusammen, ohne dass sie
+   dasselbe Zeichen tragen muessen. Seiten ohne <b> bleiben unveraendert
+   fett - die Sammelseite hat nur ein Wort. */
 .brand .brand-name {
   font-weight: 700;
   font-size: 1.15rem;
   letter-spacing: -0.01em;
+}
+
+.brand .brand-name.wordmark {
+  font-weight: 400;
+}
+
+.brand .brand-name.wordmark b {
+  font-weight: 700;
 }
 
 .brand .brand-tag {
@@ -205,6 +223,24 @@ p.lede {
 
 .teaser-card h2 {
   color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Das App-Zeichen neben der Teaser-Ueberschrift. Es steht hier stellvertretend
+   fuer das Produkt, das es noch nicht gibt - deshalb bewusst klein und neben
+   der Zeile, nicht als grosse Flaeche. */
+.teaser-mark {
+  border-radius: 7px;
+  flex: none;
+}
+
+/* Auf der Sammelseite waren die Kachelsymbole Emoji. Als Bild braucht es die
+   Schriftgroessen-Regel nicht mehr, dafuer die Rundung des Zeichens. */
+img.tool-icon {
+  border-radius: 9px;
+  display: block;
 }
 
 .teaser-card p {

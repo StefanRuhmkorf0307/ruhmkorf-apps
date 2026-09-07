@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sauerteig-Rechner: Bäckerprozente, Hydration &amp; Teigausbeute</title>
 <meta name="description" content="Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und Teigausbeute berechnen, Brotgewicht abschätzen und Rezepte auf jede Menge umrechnen.">
-<link rel="icon" href="../assets/favicon.svg?v=20260907-4" type="image/svg+xml">
-<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=20260907-4">
+<link rel="icon" href="../assets/favicon.svg?v=20260907-5" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=20260907-5">
 <!-- ?v=... ist ein Cache-Buster und MUSS bei jeder Aenderung an style.css
      oder doughcalculator.js hochgezaehlt werden (Konvention: Datum, bei
      mehreren Deploys am selben Tag mit -2, -3 dahinter). Der IONOS-Webspace
      liefert diese Dateien ohne Cache-Control-Header aus, der Browser cacht
      sie also nach eigener Heuristik - ohne den Parameter sehen
      wiederkehrende Besucher unter Umstaenden neues HTML mit alter Logik. -->
-<link rel="stylesheet" href="../assets/style.css?v=20260907-4">
+<link rel="stylesheet" href="../assets/style.css?v=20260907-5">
 <style>
   /* page-specific tweaks */
   .col-remove { text-align: right; }
@@ -203,8 +203,8 @@
 
   <header class="site-header">
     <a class="brand" href="../index.html">
-      <img class="logo-mark" src="../assets/favicon.svg?v=20260907-4" width="34" height="34" alt="">
-      <span class="brand-name">DoughCalculator</span>
+      <img class="logo-mark" src="../assets/favicon.svg?v=20260907-5" width="34" height="34" alt="">
+      <span class="brand-name wordmark"><b>Dough</b>Calculator</span>
     </a>
     <div class="lang-toggle" role="group" aria-label="Language">
       <button type="button" data-lang="de" class="active">DE</button>
@@ -300,7 +300,13 @@
     </section>
 
     <section class="card teaser-card">
-      <h2 data-i18n="teaserHeading">DoughPilot – demnächst</h2>
+      <h2>
+        <img class="teaser-mark" src="../assets/doughpilot.svg?v=20260907-5" width="30" height="30" alt="">
+        <!-- Der uebersetzte Text sitzt in einem eigenen span: applyI18n setzt
+             textContent, und das wuerde das Bild daneben mit loeschen, wenn
+             data-i18n direkt am h2 haengt. -->
+        <span data-i18n="teaserHeading">DoughPilot – demnächst</span>
+      </h2>
       <p data-i18n="teaserText">Der Rechner macht die Zahlen. DoughPilot macht den Rest: eine iPhone-App, die dich phasenweise durch den Backtag führt und die Zeiten an deine Teigtemperatur anpasst. Die App ist gerade in Arbeit – diese Seite sagt Bescheid, sobald es losgeht.</p>
     </section>
 
@@ -332,6 +338,6 @@
   </footer>
 </div>
 
-<script src="../assets/doughcalculator.js?v=20260907-4"></script>
+<script src="../assets/doughcalculator.js?v=20260907-5"></script>
 </body>
 </html>
