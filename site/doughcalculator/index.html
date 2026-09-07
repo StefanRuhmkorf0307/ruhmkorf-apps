@@ -434,12 +434,15 @@
   var STORAGE_KEY = "doughcalculator.recipe.v7"; // bumped: example recipe now has Zucker (45g) instead of the empty "Sonstiges flüssig"/"Sonstiges fest" placeholders
   var LANG_KEY = "doughcalculator.lang";
 
+  // name is per-language where the example has actual text (the starter
+  // ratio label and "Zucker"/"Sugar") - resolved to a plain string by
+  // cloneExample() below, based on the language active at the time.
   var EXAMPLE_RECIPE = [
     { name: "", category: "flour",   amount: 750, flourPct: 100, waterPct: 0 },
     { name: "", category: "water", amount: 450, flourPct: 0, waterPct: 100 },
-    { name: "1:1 Mehl:Wasser", category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
+    { name: { de: "1:1 Mehl:Wasser", en: "1:1 flour:water" }, category: "starter", amount: 225, flourPct: 50, waterPct: 50 },
     { name: "", category: "salt", amount: 21, flourPct: 0, waterPct: 0 },
-    { name: "Zucker", category: "other", amount: 45, flourPct: 0, waterPct: 0 }
+    { name: { de: "Zucker", en: "Sugar" }, category: "other", amount: 45, flourPct: 0, waterPct: 0 }
   ];
 
   var state = {
@@ -463,7 +466,17 @@
   }
 
   function cloneExample() {
-    return EXAMPLE_RECIPE.map(function (i) { return Object.assign({}, i); });
+    // state isn't assigned yet the first time this runs (it's called while
+    // building the state object literal itself), so fall back to reading
+    // the language straight from localStorage, same as state.lang does.
+    var lang = (typeof state !== "undefined" && state && state.lang) || localStorage.getItem(LANG_KEY) || "de";
+    return EXAMPLE_RECIPE.map(function (i) {
+      var copy = Object.assign({}, i);
+      if (copy.name && typeof copy.name === "object") {
+        copy.name = copy.name[lang] || copy.name.de || "";
+      }
+      return copy;
+    });
   }
 
   function saveRecipe() {
