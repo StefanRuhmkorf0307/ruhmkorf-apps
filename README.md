@@ -12,34 +12,76 @@ erhalten).
 
 ```
 ruhmkorf-apps/                  (Repo-Root)
-├── .github/workflows/deploy.yml   automatisches Deployment nach IONOS (siehe DEPLOYMENT.md)
-├── site/                          alles, was tatsächlich live geht
-│   ├── index.html                 Sammelseite (Übersicht/Landingpage, verlinkt alle Tools)
-│   ├── assets/
-│   │   ├── style.css              gemeinsames Stylesheet für alle Seiten
-│   │   └── doughcalculator.js     Rechenlogik + I18N + UI des DoughCalculators
-│   └── doughcalculator/
-│       └── index.html             DoughCalculator (nur Markup, lädt doughcalculator.js)
-├── DEPLOYMENT.md                   Schritt-für-Schritt: GitHub → IONOS (apps.ruhmkorf.de)
+├── build.js                       erzeugt site/ aus src/ (Node, ohne Abhängigkeiten)
+├── src/                           Quellen - hier wird bearbeitet
+│   ├── meta.json                  Titel, Beschreibungen und URLs je Sprache
+│   ├── doughcalculator.html       Markup des Rechners
+│   ├── index.html                 Markup der Sammelseite
+│   ├── index.i18n.json            Texte der Sammelseite (DE/EN)
+│   └── assets/                    Stylesheet, Skript, Icons
+│       ├── style.css              gemeinsames Stylesheet
+│       ├── doughcalculator.js     Rechenlogik, I18N und UI des Rechners
+│       ├── favicon.svg            Zeichen des Rechners (auch als Favicon)
+│       ├── doughpilot.svg         Zeichen der App
+│       └── apple-touch-icon.png   Lesezeichen-Icon für iOS
+├── .github/workflows/deploy.yml   baut site/ und lädt es zu IONOS (siehe DEPLOYMENT.md)
+├── DEPLOYMENT.md                   Schritt-für-Schritt: GitHub → IONOS
 └── README.md                       diese Datei
+
+(site/ entsteht beim Bauen und liegt nicht im Repository:
+ index.html, en/index.html, doughcalculator/index.html,
+ doughcalculator/en/index.html, sitemap.xml und eine Kopie von assets/)
 ```
 
-Kein Bundler, kein Build-Schritt – die Seiten laufen so, wie sie im Repo
-liegen. Die Sammelseite trägt ihr kleines Skript noch inline; die Logik des
-DoughCalculators liegt seit 2026-09-07 in `assets/doughcalculator.js` statt
-inline in der Seite. Grund: Die geplante englische Sprachversion braucht
-eine zweite HTML-Datei, und die soll dieselbe Logik mitbenutzen, statt sie
-zu duplizieren (siehe „Offene Punkte“). Nebeneffekt: der Browser kann die
-Datei zwischen Seitenaufrufen cachen.
 
-Der `site/`-Ordner ist bewusst vom Repo-Root getrennt, damit der
-Deploy-Workflow nur diesen Inhalt hochlädt und nicht versehentlich
-`README.md`, `DEPLOYMENT.md` oder `.github/` mit auf den Webspace legt.
-Geplanter Hosting-Weg: automatisches Deployment auf `apps.ruhmkorf.de`
-(IONOS-Webspace der Domain `ruhmkorf.de`) bei jedem Push auf `main`, siehe
-`DEPLOYMENT.md`. Der Ordner funktioniert aber grundsätzlich auf jedem
-statischen Hoster (GitHub Pages, Netlify, Vercel, …) – es gibt keine
-Abhängigkeiten oder Build-Konfiguration.
+## Bauen und Deployen
+
+**`site/` liegt nicht im Repository.** Der Ordner wird vollständig aus `src/`
+erzeugt — vom Deploy-Workflow bei jedem Push auf `main`, direkt vor dem
+Upload. Dadurch können Quelle und Ergebnis nicht auseinanderlaufen, und es
+braucht lokal keine Node-Installation, um etwas zu veröffentlichen: Änderungen
+in `src/` committen und pushen genügt.
+
+Wer lokal bauen und die Seiten im Browser ansehen will, braucht Node:
+
+```
+node build.js          erzeugt site/ neu
+node build.js --check   meldet per Exit-Code, ob site/ zu src/ passt
+```
+
+Warum es den Build überhaupt gibt: Die DE/EN-Umschaltung lief früher rein im
+Browser über `localStorage`, auf ein und derselben URL. Für Suchmaschinen
+existierte damit immer nur die deutsche Fassung; der englische Text war
+faktisch nicht indexierbar. Jede Sprache braucht also eine eigene URL — und
+zwei HTML-Dateien je Seite von Hand zu pflegen wäre auf Dauer auseinander
+gelaufen. Damit fällt die frühere Regel „kein Build-Schritt" bewusst.
+
+Was das Skript übernimmt:
+
+- setzt die Texte je Sprache fest ins Markup (Elemente mit `data-i18n`)
+- erzeugt Titel, Beschreibung, `canonical` und `hreflang` je Sprachfassung
+- macht aus dem Sprachumschalter echte Links zwischen den Fassungen
+- hängt an CSS, JS und Icons einen Cache-Buster aus dem **Dateiinhalt** —
+  das ersetzt die früher von Hand hochgezählte Versionsnummer, deren
+  Vergessen am 07.09.2026 dazu geführt hat, dass ein Besucher neues Markup
+  mit alter Logik zu sehen bekam
+- schreibt `sitemap.xml` mit allen Sprachfassungen
+- kopiert `src/assets/` unverändert nach `site/assets/`
+
+Wo welche Texte liegen: Die Sammelseite hat ihre in `src/index.i18n.json`.
+Der Rechner dagegen im `I18N`-Objekt in `src/assets/doughcalculator.js` —
+dort werden sie zur Laufzeit für Kategorien, Fehlermeldungen und die
+Skalierliste ohnehin gebraucht, und dieselben Strings an zwei Stellen zu
+pflegen wäre eine Fehlerquelle. Der Build liest sie von dort. Die Texte im
+Markup von `src/` sind reine Platzhalter und werden beim Bauen überschrieben.
+
+Der erzeugte `site/`-Ordner enthält ausschließlich das, was live gehen soll —
+`src/`, `build.js`, `README.md` und `.github/` landen nie auf dem Webspace.
+Deployment läuft auf `apps.ruhmkorf.de` (IONOS-Webspace der Domain
+`ruhmkorf.de`), siehe `DEPLOYMENT.md`. Der Ordner funktioniert grundsätzlich
+auf jedem statischen Hoster (GitHub Pages, Netlify, Vercel, …) – die Seiten
+verweisen untereinander und auf ihre Assets ausschließlich relativ, hängen
+also an keiner festen Domain.
 
 ## DoughCalculator – Rechenlogik (v1, Stand 2026-09-05)
 
@@ -73,21 +115,9 @@ diese Datei manuell nachgezogen werden.
 
 ## Offene Punkte
 
-- **Zweisprachige URLs (entschieden, noch nicht umgesetzt):** Die DE/EN-Um­
-  schaltung läuft aktuell nur über JavaScript/`localStorage` auf **einer**
-  URL – Suchmaschinen sehen dort immer nur Deutsch, die englische Version
-  ist faktisch nicht indexierbar. Geplant sind getrennte URLs
-  (`/doughcalculator/` und `/doughcalculator/en/`) plus `hreflang`, erzeugt
-  von einem kleinen Build-Skript aus einer gemeinsamen Quelle. Damit fällt
-  die bisherige Regel „kein Build-Schritt“ bewusst. Das Auslagern von
-  `doughcalculator.js` war der erste Schritt dorthin. Details und Begründung:
-  `claude/marketing-seo-doughcalculator.md` im Claude-Projekt.
-- **Zeichenkodierung prüfen:** `doughcalculator.js` enthält Umlaute (die
-  deutschen Oberflächentexte). Bindet ein Server die Datei mit einem
-  abweichenden Charset im `Content-Type` ein, werden sie zerschossen. Lokal
-  und über einen Server ohne Charset-Angabe getestet und in Ordnung – nach
-  dem nächsten Deploy einmal live gegenprüfen (steht z.B. „Bäcker-%“
-  korrekt in der Tabellenüberschrift?).
+- **Sammelseite:** trägt im Kopf weiterhin die Buchstabenkachel „AH". Ein
+  eigenes Zeichen dafür gibt es noch nicht; das Brot-Zeichen des Rechners
+  passt inhaltlich nicht zu einer allgemeinen Werkzeugsammlung.
 - **Branding:** Die Sammelseite heißt jetzt „Alltagshelfer“ (bewusst
   allgemein statt sauerteig-spezifisch, siehe `index.html`) - eine eigene
   Domain dafür ist noch nicht reserviert, die Seite läuft weiter unter

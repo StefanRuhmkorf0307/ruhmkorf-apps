@@ -1,3 +1,9 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# site/ wird vollstaendig von build.js aus src/ erzeugt und im
+# Deploy-Workflow vor dem Upload neu gebaut. Es gehoert deshalb nicht in die
+# Versionskontrolle - so koennen Quelle und Ergebnis gar nicht erst
+# auseinanderlaufen.
+/site/

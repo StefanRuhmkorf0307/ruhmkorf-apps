@@ -1,0 +1,54 @@
+{
+  "_comment": [
+    "Seitentitel, Beschreibungen und URL-Struktur je Sprache. Wird von",
+    "build.js gelesen; die Texte im Seitenkörper kommen dagegen aus dem",
+    "I18N-Objekt in src/assets/doughcalculator.js (Rechner) bzw. aus",
+    "index.i18n.json (Sammelseite).",
+    "",
+    "'path' ist der Pfad unterhalb von site/. Die deutsche Fassung liegt",
+    "bewusst auf der bisherigen URL, damit bestehende Links und die schon",
+    "vergebene Adresse gültig bleiben; Englisch bekommt eine Unterseite."
+  ],
+  "baseUrl": "https://apps.ruhmkorf.de",
+  "defaultLang": "de",
+  "pages": [
+    {
+      "id": "index",
+      "source": "index.html",
+      "i18n": "index.i18n.json",
+      "variants": {
+        "de": {
+          "path": "index.html",
+          "url": "/",
+          "title": "Alltagshelfer – kostenlose Web-Apps für den Alltag",
+          "description": "Sammlung kostenloser Web-Helfer für den Alltag: aktuell DoughCalculator für Sauerteigbrot, künftig weitere Tools aus ganz unterschiedlichen Bereichen."
+        },
+        "en": {
+          "path": "en/index.html",
+          "url": "/en/",
+          "title": "Alltagshelfer – free web apps for everyday life",
+          "description": "A collection of free web helpers: currently DoughCalculator for sourdough bread, with more tools from all kinds of areas to follow."
+        }
+      }
+    },
+    {
+      "id": "doughcalculator",
+      "source": "doughcalculator.html",
+      "i18nFromScript": "src/assets/doughcalculator.js",
+      "variants": {
+        "de": {
+          "path": "doughcalculator/index.html",
+          "url": "/doughcalculator/",
+          "title": "Sauerteig-Rechner: Bäckerprozente, Hydration & Teigausbeute",
+          "description": "Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und Teigausbeute berechnen, Brotgewicht abschätzen und Rezepte auf jede Menge umrechnen."
+        },
+        "en": {
+          "path": "doughcalculator/en/index.html",
+          "url": "/doughcalculator/en/",
+          "title": "Sourdough Calculator: Baker's Percentage & Hydration",
+          "description": "Free sourdough calculator: work out baker's percentages, hydration and dough yield, estimate the bread weight and scale any recipe to the amount you need."
+        }
+      }
+    }
+  ]
+}

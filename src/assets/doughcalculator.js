@@ -1,13 +1,12 @@
 /* DoughCalculator - Rechenlogik, I18N und UI-Rendering.
 
-   Bewusst aus site/doughcalculator/index.html ausgelagert: Die Logik soll
-   genau einmal existieren, damit die geplante zweite (englische)
-   Sprachversion sie mitbenutzen kann, statt sie zu duplizieren. Zusaetzlich
-   kann der Browser die Datei zwischen Seitenaufrufen cachen.
+   Ausgelagert, damit die Logik genau einmal existiert: beide Sprach-
+   fassungen (site/doughcalculator/ und .../en/) binden dieselbe Datei ein,
+   und der Browser kann sie zwischen Seitenaufrufen cachen.
 
-   Erwartet das Markup aus index.html (#ingredients-body, #scale-list,
-   #stat-*, .lang-toggle, .actions-row-Buttons) und laeuft ohne weitere
-   Abhaengigkeiten. */
+   Erwartet das von build.js erzeugte Markup (#ingredients-body,
+   #scale-list, #stat-*, .actions-row-Buttons) und laeuft ohne weitere
+   Abhaengigkeiten. Die Sprache liest es aus dem lang-Attribut. */
 
 (function () {
   "use strict";
@@ -131,9 +130,7 @@
       errNoFlour: "Bitte mindestens eine Zutat mit Mehlanteil > 0 eingeben, um Hydration/Bäckerprozente zu berechnen.",
       confirmClear: "Wirklich alle Zutaten löschen?",
 
-      // Seitentitel und Einleitung. pageTitle setzt das <title>-Element (siehe
-      // applyI18n) - ohne das bliebe der Tab-Titel beim Sprachwechsel deutsch.
-      pageTitle: "Sauerteig-Rechner: Bäckerprozente, Hydration & Teigausbeute",
+      // Einleitungstexte der Seite.
       pageHeading: "Sauerteig-Rechner",
       pageLede: "Trage deine Zutaten ein – der Rechner ermittelt Bäckerprozente, Hydration, Teigausbeute und das zu erwartende Brotgewicht. Rezepte lassen sich auf jede gewünschte Menge umrechnen, ohne Anmeldung und direkt im Browser.",
 
@@ -178,7 +175,6 @@
       errNoFlour: "Please enter at least one ingredient with flour % > 0 to calculate hydration/baker's percentages.",
       confirmClear: "Really clear all ingredients?",
 
-      pageTitle: "Sourdough Calculator: Baker's Percentage & Hydration",
       pageHeading: "Sourdough Calculator",
       pageLede: "Enter your ingredients and the calculator works out baker's percentages, hydration, dough yield and the expected bread weight. Scale any recipe to the amount you need – no sign-up, right in your browser.",
 
@@ -200,7 +196,15 @@
   };
 
   var STORAGE_KEY = "doughcalculator.recipe.v7"; // bumped: example recipe now has Zucker (45g) instead of the empty "Sonstiges flüssig"/"Sonstiges fest" placeholders
-  var LANG_KEY = "doughcalculator.lang";
+  /* Die Sprache steht seit der Umstellung auf eigene Sprach-URLs fest im
+     Markup (build.js setzt das lang-Attribut). Frueher lag sie in
+     localStorage und wurde im Browser umgeschaltet - fuer Suchmaschinen gab
+     es dadurch nur eine Fassung pro URL. Die Strings unten bleiben trotzdem
+     zweisprachig im Skript, weil Kategorien, Fehlermeldungen und die
+     Skalierliste erst zur Laufzeit entstehen. */
+  function pageLang() {
+    return document.documentElement.lang === "en" ? "en" : "de";
+  }
 
   // name is per-language where the example has actual text (the starter
   // ratio label and "Zucker"/"Sugar") - resolved to a plain string by
@@ -214,7 +218,7 @@
   ];
 
   var state = {
-    lang: localStorage.getItem(LANG_KEY) || "de",
+    lang: pageLang(),
     ingredients: loadRecipe()
   };
 
@@ -236,8 +240,8 @@
   function cloneExample() {
     // state isn't assigned yet the first time this runs (it's called while
     // building the state object literal itself), so fall back to reading
-    // the language straight from localStorage, same as state.lang does.
-    var lang = (typeof state !== "undefined" && state && state.lang) || localStorage.getItem(LANG_KEY) || "de";
+    // the language straight from the markup, same as state.lang does.
+    var lang = (typeof state !== "undefined" && state && state.lang) || pageLang();
     return EXAMPLE_RECIPE.map(function (i) {
       var copy = Object.assign({}, i);
       if (copy.name && typeof copy.name === "object") {
@@ -260,19 +264,11 @@
 
   function t(key) { return I18N[state.lang][key]; }
 
-  function applyI18n() {
-    document.documentElement.lang = state.lang;
-    // Der Tab-/Suchmaschinentitel steckt nicht im Body und wird deshalb von
-    // der data-i18n-Schleife unten nicht erfasst - hier separat setzen, sonst
-    // bliebe er nach einem Wechsel auf EN weiterhin deutsch.
-    if (I18N[state.lang].pageTitle) document.title = I18N[state.lang].pageTitle;
-    document.querySelectorAll("[data-i18n]").forEach(function (el) {
-      var key = el.getAttribute("data-i18n");
-      if (I18N[state.lang][key] !== undefined) el.textContent = I18N[state.lang][key];
-    });
-    document.querySelectorAll(".lang-toggle button").forEach(function (btn) {
-      btn.classList.toggle("active", btn.getAttribute("data-lang") === state.lang);
-    });
+  /* Baut alles auf, was das Skript selbst erzeugt. Die festen Texte im
+     Markup ruehrt es nicht mehr an - die hat build.js je Sprachfassung
+     bereits eingesetzt. Die data-i18n-Attribute bleiben trotzdem stehen:
+     sie sind die Marken, an denen der Build ansetzt. */
+  function renderAll() {
     renderCategoryOptions();
     render();
   }
@@ -501,18 +497,31 @@
     return tr;
   }
 
+  // Beschriftet eine Uebersichtskachel, sofern es sie im Markup ueberhaupt
+  // gibt. Die Pruefung ist kein Selbstzweck: HTML und Skript werden getrennt
+  // gecacht (der IONOS-Webspace liefert dafuer keine Cache-Control-Header),
+  // ein Besucher kann also voruebergehend neues Skript mit altem HTML
+  // kombinieren. Ohne die Pruefung wuerde eine fehlende Kachel hier einen
+  // TypeError werfen und der Rest der Funktion - inklusive Skalierliste -
+  // liefe gar nicht mehr. Lieber eine Kachel ohne Wert als ein toter Rechner.
+  function setStat(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+    return el;
+  }
+
   function renderSummaryAndBakerPercents() {
     var totals = computeTotals();
-    document.getElementById("stat-dough").textContent = fmt(totals.totalDough, 0) + " g";
-    document.getElementById("stat-flour").textContent = fmt(totals.totalFlour, 0) + " g";
-    document.getElementById("stat-water").textContent = fmt(totals.totalWater, 0) + " g";
-    document.getElementById("stat-hydration").textContent = totals.hydration === null ? t("errNoFlour") : fmt(totals.hydration, 1) + " %";
-    document.getElementById("stat-hydration").style.fontSize = totals.hydration === null ? "0.8rem" : "";
+    setStat("stat-dough", fmt(totals.totalDough, 0) + " g");
+    setStat("stat-flour", fmt(totals.totalFlour, 0) + " g");
+    setStat("stat-water", fmt(totals.totalWater, 0) + " g");
+    var hydrationEl = setStat("stat-hydration", totals.hydration === null ? t("errNoFlour") : fmt(totals.hydration, 1) + " %");
+    if (hydrationEl) hydrationEl.style.fontSize = totals.hydration === null ? "0.8rem" : "";
     // Ohne Einheit: die TA wird konventionell als blosse Zahl angegeben
     // ("TA 165"), nicht als Prozentwert. fmt() liefert bei null ein "–", die
     // Fehlermeldung steht schon in der Hydration-Kachel daneben.
-    document.getElementById("stat-ta").textContent = fmt(totals.doughYield, 1);
-    document.getElementById("stat-bread").textContent = fmt(totals.breadWeight, 0) + " g";
+    setStat("stat-ta", fmt(totals.doughYield, 1));
+    setStat("stat-bread", fmt(totals.breadWeight, 0) + " g");
 
     document.querySelectorAll("#ingredients-body tr").forEach(function (tr) {
       if (tr.classList.contains("hint-row")) return;
@@ -757,14 +766,6 @@
     render();
   });
 
-  document.querySelectorAll(".lang-toggle button").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      state.lang = btn.getAttribute("data-lang");
-      localStorage.setItem(LANG_KEY, state.lang);
-      applyI18n();
-    });
-  });
-
   // Flush any pending debounced save immediately when the tab is hidden or
   // closed, so a quick navigation away never loses the last edit
   // (same principle as the iOS app: debounce normally, save instantly on
@@ -791,5 +792,5 @@
     }
   });
 
-  applyI18n();
+  renderAll();
 })();

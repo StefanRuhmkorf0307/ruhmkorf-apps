@@ -1,0 +1,64 @@
+<!-- QUELLE - wird von build.js zu site/index.html (DE) und site/en/index.html
+     (EN) verarbeitet. Danach 'node build.js' ausfuehren und site/ mit
+     committen.
+
+     Die Texte zwischen Tags mit data-i18n sind Platzhalter und werden beim
+     Bauen ueberschrieben; geaendert werden sie in src/index.i18n.json. Zu den
+     uebrigen Platzhaltern siehe den Kommentar in doughcalculator.html. -->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alltagshelfer – kostenlose Web-Apps für den Alltag</title>
+<meta name="description" content="Sammlung kostenloser Web-Helfer für den Alltag: aktuell DoughCalculator für Sauerteigbrot, künftig weitere Tools aus ganz unterschiedlichen Bereichen.">
+{{head-links}}
+<link rel="icon" href="{{assets}}/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{assets}}/apple-touch-icon.png">
+<link rel="stylesheet" href="{{assets}}/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="logo-mark">AH</span>
+      <span>
+        <span class="brand-name" data-i18n="brandName">Alltagshelfer</span><br>
+        <span class="brand-tag" data-i18n="brandTag">Kostenlose Web-Helfer für den Alltag</span>
+      </span>
+    </a>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="de" class="active">DE</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <main>
+    <h1 data-i18n="title">Alltagshelfer</h1>
+    <p class="lede" data-i18n="lede">Kleine, kostenlose Web-Werkzeuge für den Alltag – ganz ohne Anmeldung. Aktuell dreht sich hier alles ums Sauerteigbrot, nach und nach kommen aber ganz unterschiedliche Helfer dazu.</p>
+
+    <div class="tool-grid">
+      <a class="tool-card" href="{{link:doughcalculator}}">
+        <img class="tool-icon" src="{{assets}}/favicon.svg" width="40" height="40" alt="">
+        <span class="tool-title">DoughCalculator</span>
+        <span class="tool-desc" data-i18n="calcDesc">Bäckerprozente, Hydration und erwartetes Brotgewicht aus deiner Zutatenliste – inkl. Skalieren auf ein Zielgewicht.</span>
+      </a>
+
+      <span class="tool-card disabled">
+        <img class="tool-icon" src="{{assets}}/doughpilot.svg" width="40" height="40" alt="">
+        <span class="tool-title">DoughPilot</span>
+        <span class="badge" data-i18n="comingSoon">Demnächst</span>
+        <span class="tool-desc" data-i18n="pilotDesc">Macht das Backen von Sauerteigbrot einfach.</span>
+      </span>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <address class="impressum-footnote">
+      <span data-i18n="impressumHeading">Impressum</span>: Stefan Ruhmkorf · In den Alleegärten 21 · 76297 Stutensee · Deutschland · <span data-i18n="impressumContact">Kontakt</span>: <a href="mailto:stefan@ruhmkorf.de">stefan@ruhmkorf.de</a>
+    </address>
+  </footer>
+</div>
+</body>
+</html>

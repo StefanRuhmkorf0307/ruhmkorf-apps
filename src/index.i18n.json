@@ -1,0 +1,35 @@
+{
+  "_comment": [
+    "Texte der Sammelseite in beiden Sprachen. Sie hatte diese Strings",
+    "früher in einem Inline-Script, das beim Klick umgeschaltet hat. Seit",
+    "die Sprachen eigene URLs haben, setzt build.js sie fest ein und das",
+    "Script entfällt ersatzlos.",
+    "",
+    "Der Rechner pflegt seine Texte nicht hier, sondern im I18N-Objekt in",
+    "src/assets/doughcalculator.js - dort werden sie zur Laufzeit für",
+    "Kategorien, Fehlermeldungen und die Skalierliste ohnehin gebraucht,",
+    "und zwei Quellen für dieselben Strings wären eine Fehlerquelle."
+  ],
+  "de": {
+    "brandName": "Alltagshelfer",
+    "brandTag": "Kostenlose Web-Helfer für den Alltag",
+    "title": "Alltagshelfer",
+    "lede": "Kleine, kostenlose Web-Werkzeuge für den Alltag – ganz ohne Anmeldung. Aktuell dreht sich hier alles ums Sauerteigbrot, nach und nach kommen aber ganz unterschiedliche Helfer dazu.",
+    "calcDesc": "Bäckerprozente, Hydration und erwartetes Brotgewicht aus deiner Zutatenliste – inkl. Skalieren auf ein Zielgewicht.",
+    "comingSoon": "Demnächst",
+    "pilotDesc": "Macht das Backen von Sauerteigbrot einfach.",
+    "impressumHeading": "Impressum",
+    "impressumContact": "Kontakt"
+  },
+  "en": {
+    "brandName": "Alltagshelfer",
+    "brandTag": "Free web helpers for everyday life",
+    "title": "Alltagshelfer",
+    "lede": "Small, free web tools for everyday life – no sign-up needed. Right now everything here is about sourdough bread, but all kinds of other helpers will join over time.",
+    "calcDesc": "Baker's percentages, hydration and expected bread weight from your ingredient list – including scaling to a target weight.",
+    "comingSoon": "Coming soon",
+    "pilotDesc": "Makes baking sourdough bread easy.",
+    "impressumHeading": "Legal notice",
+    "impressumContact": "Contact"
+  }
+}

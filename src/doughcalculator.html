@@ -1,11 +1,28 @@
+<!-- QUELLE - wird von build.js zu site/doughcalculator/index.html (DE) und
+     site/doughcalculator/en/index.html (EN) verarbeitet. Danach 'node build.js'
+     ausfuehren und site/ mit committen.
+
+     Achtung: Die Texte zwischen Tags mit data-i18n sind nur Platzhalter und
+     werden beim Bauen ueberschrieben. Geaendert werden sie im I18N-Objekt in
+     src/assets/doughcalculator.js - dort liegen sie, weil das Skript sie zur
+     Laufzeit ohnehin braucht (Kategorien, Fehlermeldungen, Skalierliste).
+
+     Die uebrigen Platzhalter in doppelten geschweiften Klammern setzt der
+     Build ein: den relativen Asset-Pfad samt Cache-Buster, canonical und
+     hreflang im Kopf sowie Verweise auf die gleichsprachige Fassung einer
+     anderen Seite. Auch der Sprachumschalter wird komplett ersetzt. Welche
+     Namen es gibt, steht in build.js. -->
 <!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DoughCalculator – Bäckerprozente, Hydration &amp; Brotgewicht</title>
-<meta name="description" content="Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und erwartetes Brotgewicht aus deiner Zutatenliste berechnen und Rezepte proportional skalieren.">
-<link rel="stylesheet" href="../assets/style.css">
+<title>Sauerteig-Rechner: Bäckerprozente, Hydration &amp; Teigausbeute</title>
+<meta name="description" content="Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und Teigausbeute berechnen, Brotgewicht abschätzen und Rezepte auf jede Menge umrechnen.">
+{{head-links}}
+<link rel="icon" href="{{assets}}/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{assets}}/apple-touch-icon.png">
+<link rel="stylesheet" href="{{assets}}/style.css">
 <style>
   /* page-specific tweaks */
   .col-remove { text-align: right; }
@@ -44,7 +61,7 @@
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(44, 35, 27, 0.16);
+    box-shadow: var(--shadow-hover);
     max-height: 240px;
     overflow-y: auto;
   }
@@ -194,9 +211,9 @@
 <div class="wrap">
 
   <header class="site-header">
-    <a class="brand" href="../index.html">
-      <span class="logo-mark">DC</span>
-      <span class="brand-name">DoughCalculator</span>
+    <a class="brand" href="{{link:index}}">
+      <img class="logo-mark" src="{{assets}}/favicon.svg" width="34" height="34" alt="">
+      <span class="brand-name wordmark"><b>Dough</b>Calculator</span>
     </a>
     <div class="lang-toggle" role="group" aria-label="Language">
       <button type="button" data-lang="de" class="active">DE</button>
@@ -205,6 +222,9 @@
   </header>
 
   <main>
+    <h1 data-i18n="pageHeading">Sauerteig-Rechner</h1>
+    <p class="lede" data-i18n="pageLede">Trage deine Zutaten ein – der Rechner ermittelt Bäckerprozente, Hydration, Teigausbeute und das zu erwartende Brotgewicht. Rezepte lassen sich auf jede gewünschte Menge umrechnen, ohne Anmeldung und direkt im Browser.</p>
+
     <section class="card">
       <h2 data-i18n="ingredientsHeading">Zutaten</h2>
       <div>
@@ -237,12 +257,21 @@
     <section class="card">
       <h2 data-i18n="summaryHeading">Übersicht</h2>
       <div class="summary-list">
-        <div class="summary-item">
-          <div class="summary-row">
-            <span class="summary-label" data-i18n="statHydration">Hydration</span>
-            <span class="summary-value" id="stat-hydration">–</span>
+        <div class="summary-pair summary-pair-stacked">
+          <div class="summary-item">
+            <div class="summary-row">
+              <span class="summary-label" data-i18n="statHydration">Hydration</span>
+              <span class="summary-value" id="stat-hydration">–</span>
+            </div>
+            <p class="summary-explain" data-i18n="statHydrationExplain">Gesamtwassergewicht geteilt durch Gesamtmehlgewicht, × 100.</p>
           </div>
-          <p class="summary-explain" data-i18n="statHydrationExplain">Gesamtwassergewicht geteilt durch Gesamtmehlgewicht, × 100.</p>
+          <div class="summary-item">
+            <div class="summary-row">
+              <span class="summary-label" data-i18n="statDoughYield">Teigausbeute (TA)</span>
+              <span class="summary-value" id="stat-ta">–</span>
+            </div>
+            <p class="summary-explain" data-i18n="statDoughYieldExplain">Mehl plus Wasser, geteilt durch das Mehl, × 100 – der im deutschen Backhandwerk übliche Wert. Liegt rechnerisch immer 100 über der Hydration.</p>
+          </div>
         </div>
         <div class="summary-pair">
           <div class="summary-item">
@@ -279,6 +308,36 @@
       </div>
     </section>
 
+    <section class="card teaser-card">
+      <h2>
+        <img class="teaser-mark" src="{{assets}}/doughpilot.svg" width="30" height="30" alt="">
+        <!-- Der uebersetzte Text sitzt in einem eigenen span: applyI18n setzt
+             textContent, und das wuerde das Bild daneben mit loeschen, wenn
+             data-i18n direkt am h2 haengt. -->
+        <span data-i18n="teaserHeading">DoughPilot – demnächst</span>
+      </h2>
+      <p data-i18n="teaserText">Der Rechner macht die Zahlen. DoughPilot macht den Rest: eine iPhone-App, die dich phasenweise durch den Backtag führt und die Zeiten an deine Teigtemperatur anpasst. Die App ist gerade in Arbeit – diese Seite sagt Bescheid, sobald es losgeht.</p>
+    </section>
+
+    <section class="card prose">
+      <h2 data-i18n="explainHeading">Was der Rechner berechnet</h2>
+
+      <h3 data-i18n="explainBakerHeading">Bäckerprozent</h3>
+      <p data-i18n="explainBakerText">Beim Bäckerprozent wird jede Zutat ins Verhältnis zum Gesamtmehlgewicht gesetzt, das dabei immer 100 % entspricht. Ein Rezept mit 1.000 g Mehl und 700 g Wasser hat also 70 % Wasser, unabhängig davon, wie groß der Ansatz insgesamt ist. Genau das macht die Angabe nützlich: Rezepte unterschiedlicher Größe werden direkt vergleichbar, und das Umrechnen auf eine andere Menge ist reine Multiplikation.</p>
+
+      <h3 data-i18n="explainHydrationHeading">Hydration</h3>
+      <p data-i18n="explainHydrationText">Die Hydration ist der Wasseranteil in Bäckerprozent, also das Gesamtwassergewicht geteilt durch das Gesamtmehlgewicht. Anstellgut zählt dabei anteilig mit: Bei einem Verhältnis von 1:1 bestehen 200 g Anstellgut aus 100 g Mehl und 100 g Wasser, beides fließt in die Rechnung ein. Weiche, offenporige Teige liegen typischerweise zwischen 70 und 85 %, festere Brotteige darunter.</p>
+
+      <h3 data-i18n="explainTaHeading">Teigausbeute (TA)</h3>
+      <p data-i18n="explainTaText">Die Teigausbeute, kurz TA, beschreibt dasselbe wie die Hydration, wird aber anders gerechnet: Mehl plus Wasser, geteilt durch das Mehl. Sie liegt deshalb immer genau 100 über der Hydration – aus 70 % Hydration wird eine TA von 170. Im deutschen Backhandwerk ist die TA die geläufigere Angabe, in englischsprachigen Rezepten findet sich fast immer die Hydration.</p>
+
+      <h3 data-i18n="explainBreadHeading">Brotgewicht und Backverlust</h3>
+      <p data-i18n="explainBreadText">Beim Backen verdunstet Wasser, das fertige Brot wiegt also weniger als der rohe Teig. Der Rechner setzt dafür pauschal 15 % an. Der tatsächliche Verlust hängt von Backzeit, Temperatur und Form ab: flache Brote verlieren mehr als hohe, lange Backzeiten mehr als kurze.</p>
+
+      <h3 data-i18n="explainScaleHeading">Rezepte skalieren</h3>
+      <p data-i18n="explainScaleText">Beim Skalieren wird ein einziger Faktor auf alle Zutaten angewendet. Die Bäckerprozente bleiben dabei unverändert, das Rezept behält also seinen Charakter. Als Ausgangspunkt kannst du ein Ziel-Teiggewicht angeben, ein gewünschtes Brotgewicht, oder die Menge einer einzelnen Zutat – etwa wenn noch genau 300 g Mehl im Schrank stehen.</p>
+    </section>
+
   </main>
 
   <footer class="site-footer">
@@ -288,6 +347,6 @@
   </footer>
 </div>
 
-<script src="../assets/doughcalculator.js"></script>
+<script src="{{assets}}/doughcalculator.js"></script>
 </body>
 </html>

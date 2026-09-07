@@ -163,16 +163,26 @@ img.logo-mark {
   flex: none;
 }
 
-.lang-toggle button {
-  border: none;
-  background: transparent;
+/* Der Umschalter war frueher ein Schaltflaechen-Paar, das im Browser die
+   Sprache tauschte. Seit jede Sprache eine eigene URL hat, ist die andere
+   Fassung ein echter Link und die aktuelle ein schlichtes <span> - nur so
+   kann eine Suchmaschine der Sprachfassung ueberhaupt folgen. Beide
+   Elementarten teilen sich deshalb dieselbe Optik. */
+.lang-toggle a,
+.lang-toggle span {
+  display: inline-block;
   padding: 6px 14px;
   font-size: 0.85rem;
-  cursor: pointer;
   color: var(--color-text-muted);
+  text-decoration: none;
 }
 
-.lang-toggle button.active {
+.lang-toggle a:hover {
+  background: var(--color-btn-hover);
+  color: var(--color-text);
+}
+
+.lang-toggle .active {
   background: var(--color-primary);
   color: var(--color-primary-contrast);
   font-weight: 600;
