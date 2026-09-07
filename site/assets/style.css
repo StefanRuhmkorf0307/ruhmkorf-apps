@@ -202,21 +202,16 @@ footer.site-footer {
   font-size: 0.85rem;
 }
 
-footer.site-footer .impressum-heading {
-  margin: 0 0 6px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--color-text);
-}
-
-footer.site-footer address {
+/* Impressum as a small, unobtrusive footnote - not a labeled section -
+   one compact line rather than a heading plus a multi-line address block. */
+footer.site-footer .impressum-footnote {
   font-style: normal;
-  line-height: 1.6;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
 }
 
-footer.site-footer address a {
+footer.site-footer .impressum-footnote a {
   color: inherit;
 }
 
