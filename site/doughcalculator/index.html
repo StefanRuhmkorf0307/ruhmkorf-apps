@@ -244,38 +244,42 @@
       <div class="summary-list">
         <div class="summary-item">
           <div class="summary-row">
-            <span class="summary-label" data-i18n="statDough">Gesamtteiggewicht</span>
-            <span class="summary-value" id="stat-dough">–</span>
-          </div>
-          <p class="summary-explain" data-i18n="statDoughExplain">Summe der Mengen aller Zutaten.</p>
-        </div>
-        <div class="summary-item">
-          <div class="summary-row">
-            <span class="summary-label" data-i18n="statFlour">Gesamtmehlgewicht</span>
-            <span class="summary-value" id="stat-flour">–</span>
-          </div>
-          <p class="summary-explain" data-i18n="statFlourExplain">Summe aus Menge × Mehlanteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Mehl).</p>
-        </div>
-        <div class="summary-item">
-          <div class="summary-row">
-            <span class="summary-label" data-i18n="statWater">Gesamtwassergewicht</span>
-            <span class="summary-value" id="stat-water">–</span>
-          </div>
-          <p class="summary-explain" data-i18n="statWaterExplain">Summe aus Menge × Wasseranteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Wasser).</p>
-        </div>
-        <div class="summary-item">
-          <div class="summary-row">
             <span class="summary-label" data-i18n="statHydration">Hydration</span>
             <span class="summary-value" id="stat-hydration">–</span>
           </div>
           <p class="summary-explain" data-i18n="statHydrationExplain">Gesamtwassergewicht geteilt durch Gesamtmehlgewicht, × 100.</p>
         </div>
-        <div class="summary-item">
-          <div class="summary-row">
-            <span class="summary-label" data-i18n="statBreadWeight">Erwartetes Brotgewicht</span>
-            <span class="summary-value" id="stat-bread">–</span>
+        <div class="summary-pair">
+          <div class="summary-item">
+            <div class="summary-row">
+              <span class="summary-label" data-i18n="statBreadWeight">Erwartetes Brotgewicht</span>
+              <span class="summary-value" id="stat-bread">–</span>
+            </div>
+            <p class="summary-explain" data-i18n="statBreadWeightExplain">Gesamtteiggewicht abzüglich 15% Backverlust beim Backen.</p>
           </div>
-          <p class="summary-explain" data-i18n="statBreadWeightExplain">Gesamtteiggewicht abzüglich 15% Backverlust beim Backen.</p>
+          <div class="summary-item">
+            <div class="summary-row">
+              <span class="summary-label" data-i18n="statDough">Gesamtteiggewicht</span>
+              <span class="summary-value" id="stat-dough">–</span>
+            </div>
+            <p class="summary-explain" data-i18n="statDoughExplain">Summe der Mengen aller Zutaten.</p>
+          </div>
+        </div>
+        <div class="summary-pair">
+          <div class="summary-item">
+            <div class="summary-row">
+              <span class="summary-label" data-i18n="statFlour">Gesamtmehlgewicht</span>
+              <span class="summary-value" id="stat-flour">–</span>
+            </div>
+            <p class="summary-explain" data-i18n="statFlourExplain">Summe aus Menge × Mehlanteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Mehl).</p>
+          </div>
+          <div class="summary-item">
+            <div class="summary-row">
+              <span class="summary-label" data-i18n="statWater">Gesamtwassergewicht</span>
+              <span class="summary-value" id="stat-water">–</span>
+            </div>
+            <p class="summary-explain" data-i18n="statWaterExplain">Summe aus Menge × Wasseranteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Wasser).</p>
+          </div>
         </div>
       </div>
     </section>
@@ -871,7 +875,7 @@
 
     var labelEl = document.createElement("div");
     labelEl.className = "scale-row-label";
-    labelEl.textContent = t("colCategory") + " / " + t("colName");
+    labelEl.textContent = t("colCategory");
     row.appendChild(labelEl);
 
     var valueEl = document.createElement("div");

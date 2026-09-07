@@ -318,6 +318,18 @@ table.ingredients .col-amount input {
   padding: 12px 14px;
 }
 
+/* Two related tiles shown side by side (e.g. Brotgewicht/Teiggewicht,
+   Mehlgewicht/Wassergewicht) instead of stacked. */
+.summary-pair {
+  display: flex;
+  gap: 10px;
+}
+
+.summary-pair .summary-item {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .summary-row {
   display: flex;
   align-items: baseline;
@@ -326,11 +338,16 @@ table.ingredients .col-amount input {
   flex-wrap: wrap;
 }
 
+.summary-row > * {
+  min-width: 0;
+}
+
 .summary-label {
   font-size: 0.75rem;
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  overflow-wrap: break-word;
 }
 
 .summary-value {
@@ -379,6 +396,17 @@ table.ingredients .col-amount input {
   header.site-header {
     flex-wrap: wrap;
     row-gap: 10px;
+  }
+
+  /* Paired summary tiles (Brotgewicht/Teiggewicht, Mehlgewicht/Wassergewicht)
+     are half-width here, too narrow for the uppercase label at full size -
+     shrink it a bit so words wrap on spaces instead of breaking mid-word. */
+  .summary-pair .summary-label {
+    font-size: 0.66rem;
+    letter-spacing: 0.01em;
+  }
+  .summary-pair .summary-value {
+    font-size: 1.1rem;
   }
 
   /* Force a real block/grid context: without this, td elements keep their
