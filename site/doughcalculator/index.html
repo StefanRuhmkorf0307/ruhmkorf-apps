@@ -6,7 +6,13 @@
 <title>Sauerteig-Rechner: Bäckerprozente, Hydration &amp; Teigausbeute</title>
 <meta name="description" content="Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und Teigausbeute berechnen, Brotgewicht abschätzen und Rezepte auf jede Menge umrechnen.">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css">
+<!-- ?v=... ist ein Cache-Buster und MUSS bei jeder Aenderung an style.css
+     oder doughcalculator.js hochgezaehlt werden (Konvention: Datum, bei
+     mehreren Deploys am selben Tag mit -2, -3 dahinter). Der IONOS-Webspace
+     liefert diese Dateien ohne Cache-Control-Header aus, der Browser cacht
+     sie also nach eigener Heuristik - ohne den Parameter sehen
+     wiederkehrende Besucher unter Umstaenden neues HTML mit alter Logik. -->
+<link rel="stylesheet" href="../assets/style.css?v=20260907-3">
 <style>
   /* page-specific tweaks */
   .col-remove { text-align: right; }
@@ -45,7 +51,7 @@
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(44, 35, 27, 0.16);
+    box-shadow: var(--shadow-hover);
     max-height: 240px;
     overflow-y: auto;
   }
@@ -325,6 +331,6 @@
   </footer>
 </div>
 
-<script src="../assets/doughcalculator.js"></script>
+<script src="../assets/doughcalculator.js?v=20260907-3"></script>
 </body>
 </html>

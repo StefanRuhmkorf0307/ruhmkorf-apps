@@ -12,10 +12,50 @@
   --color-primary-contrast: #ffffff;
   --color-accent: #7a8c5b;
   --color-danger: #b3452f;
+  /* Flaechen, die sich nicht allein aus den Farben oben ergeben: der
+     Teaser-Verlauf, die Badge und die beiden Hover-Toene. Als Variablen
+     gefuehrt, damit der Dark-Mode-Block unten sie mit umschalten kann,
+     statt dass irgendwo ein heller Farbwert stehen bleibt. */
+  --color-teaser-top: #fdf6ec;
+  --color-teaser-border: #e2cfae;
+  --color-badge-bg: #f1ead9;
+  --color-btn-hover: #f4ede2;
+  --color-danger-hover: #fbeceb;
   --radius: 10px;
   --shadow: 0 1px 3px rgba(44, 35, 27, 0.08), 0 1px 2px rgba(44, 35, 27, 0.06);
+  --shadow-hover: 0 4px 14px rgba(44, 35, 27, 0.12);
   --max-width: 880px;
   font-size: 16px;
+  /* Laesst Scrollbalken, Zahlenfelder und Auswahllisten im Dark Mode
+     mitziehen. Ohne das bleiben genau diese nativen Bedienelemente hell
+     und stechen aus der dunklen Seite heraus. */
+  color-scheme: light dark;
+}
+
+/* Dunkle Variante, automatisch nach Systemeinstellung. Bewusst warme
+   Braun- statt Neutralgrautoene, damit die Seite in beiden Modi dieselbe
+   Anmutung behaelt. Die Markenfarbe wird aufgehellt: #a9601f traegt auf
+   hellem Grund, saeuft auf dunklem aber ab. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1c1712;
+    --color-surface: #262019;
+    --color-border: #3b322a;
+    --color-text: #f0e7dc;
+    --color-text-muted: #b3a596;
+    --color-primary: #d9843c;
+    --color-primary-dark: #e8a463;
+    --color-primary-contrast: #1c1712;
+    --color-accent: #9bb06f;
+    --color-danger: #e2705a;
+    --color-teaser-top: #33271b;
+    --color-teaser-border: #4d3b26;
+    --color-badge-bg: #3b322a;
+    --color-btn-hover: #322a22;
+    --color-danger-hover: #3d2823;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.5);
+  }
 }
 
 * {
@@ -150,8 +190,8 @@ p.lede {
    das ist der einzige Kanal, ueber den Besucher vom App-Start erfahren
    (es wird keine E-Mail-Liste gesammelt), also darf er auffallen. */
 .teaser-card {
-  background: linear-gradient(180deg, #fdf6ec 0%, var(--color-surface) 100%);
-  border-color: #e2cfae;
+  background: linear-gradient(180deg, var(--color-teaser-top) 0%, var(--color-surface) 100%);
+  border-color: var(--color-teaser-border);
 }
 
 .teaser-card h2 {
@@ -195,7 +235,7 @@ p.lede {
 
 .tool-card:not(.disabled):hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(44, 35, 27, 0.12);
+  box-shadow: var(--shadow-hover);
 }
 
 .tool-card.disabled {
@@ -225,7 +265,7 @@ p.lede {
   letter-spacing: 0.04em;
   padding: 2px 8px;
   border-radius: 999px;
-  background: #f1ead9;
+  background: var(--color-badge-bg);
   color: var(--color-text-muted);
   width: fit-content;
 }
@@ -325,7 +365,7 @@ table.ingredients .col-amount input::-webkit-inner-spin-button {
 }
 
 .icon-btn:hover {
-  background: #fbeceb;
+  background: var(--color-danger-hover);
 }
 
 .btn {
@@ -342,7 +382,7 @@ table.ingredients .col-amount input::-webkit-inner-spin-button {
 }
 
 .btn:hover {
-  background: #f4ede2;
+  background: var(--color-btn-hover);
 }
 
 .btn.primary {
