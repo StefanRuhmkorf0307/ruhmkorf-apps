@@ -317,6 +317,16 @@
     en: { flour: "Flour", water: "Water", liquid: "Other (liquid)", starter: "Starter", salt: "Salt", other: "Other (solid)" }
   };
 
+  // Category dropdown options are shown alphabetically by their translated
+  // label (not in the fixed flour/water/starter/... order the object above
+  // is defined in), so the sort order also flips correctly between DE/EN.
+  function sortedCategoryKeys(lang) {
+    var labels = CATEGORY_LABELS[lang];
+    return Object.keys(labels).sort(function (a, b) {
+      return labels[a].localeCompare(labels[b], lang);
+    });
+  }
+
   // Starter/Anstellgut suggestions describe a flour:water ratio (by weight).
   // Picking one doesn't just fill the text field - it also sets that row's
   // flourPct/waterPct to match (see nameInput's "input" handler below), so
@@ -521,7 +531,7 @@
     document.querySelectorAll("select.cat-select").forEach(function (sel) {
       var current = sel.value;
       sel.innerHTML = "";
-      Object.keys(CATEGORY_LABELS[state.lang]).forEach(function (key) {
+      sortedCategoryKeys(state.lang).forEach(function (key) {
         var opt = document.createElement("option");
         opt.value = key;
         opt.textContent = CATEGORY_LABELS[state.lang][key];
@@ -563,7 +573,7 @@
     tdCat.dataset.label = t("colCategory");
     var catSelect = document.createElement("select");
     catSelect.className = "cat-select";
-    Object.keys(CATEGORY_LABELS[state.lang]).forEach(function (key) {
+    sortedCategoryKeys(state.lang).forEach(function (key) {
       var opt = document.createElement("option");
       opt.value = key;
       opt.textContent = CATEGORY_LABELS[state.lang][key];
@@ -802,7 +812,17 @@
     if (factor === null || !isFinite(factor) || factor <= 0) return;
 
     state.ingredients.forEach(function (ing) {
-      ing.amount = Math.round((Number(ing.amount) || 0) * factor * 10) / 10;
+      var current = Number(ing.amount) || 0;
+      var scaled = Math.round(current * factor * 10) / 10;
+      // Proportional scaling must never zero out an ingredient that
+      // currently has an amount - baker's percentages are amount/total
+      // flour, so a flour-category ingredient rounding down to 0 would
+      // make totalFlour 0 and break every percentage in the recipe (and
+      // even for a non-flour ingredient it's a real, visible jump to 0%,
+      // not the unchanged percentage scaling is supposed to preserve).
+      // 0.1g is the smallest step this app works with, so that's the floor.
+      if (current > 0 && scaled <= 0) scaled = 0.1;
+      ing.amount = scaled;
     });
     scheduleSave();
     render();
