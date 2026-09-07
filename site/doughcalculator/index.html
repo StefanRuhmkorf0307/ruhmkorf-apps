@@ -158,30 +158,34 @@
     margin: 0;
   }
   @media (max-width: 560px) {
+    /* Same single-line row as the wide view - no stacking. Only the big
+       (« »)  jump-by-a-lot buttons are hidden, freeing enough width for
+       the label, the value field and the two remaining +/- steppers to
+       stay on one line; the label (which already truncates with an
+       ellipsis) absorbs whatever width is left. flex-wrap must switch to
+       nowrap here too - otherwise the label (at its full 160px flex-basis)
+       gets pushed onto its own line instead of shrinking down first. */
     .scale-row {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
+      flex-wrap: nowrap;
     }
-    .scale-row-header {
+    .scale-step-btn-big {
       display: none;
     }
     .scale-row-controls {
-      flex: 1 1 auto;
-      width: 100%;
-      justify-content: space-between;
+      gap: 4px;
     }
     .scale-step-btn {
-      flex: 1 1 0;
-      min-width: 0;
       height: 40px;
+      min-width: 36px;
+      padding: 0 4px;
     }
     .scale-value-input {
-      flex: 1 1 90px;
-      min-width: 0;
-      width: auto;
+      /* Narrower than the 84px desktop width - on a small screen every
+         pixel here is a pixel the (already truncating) label doesn't get. */
+      width: 64px;
       height: 40px;
       font-size: 16px;
+      padding: 0 6px;
     }
   }
 </style>
@@ -859,14 +863,17 @@
     controls.appendChild(valueInput);
 
     [
-      { delta: -steps.big, icon: "«" },
-      { delta: -steps.small, icon: "‹" },
-      { delta: steps.small, icon: "›" },
-      { delta: steps.big, icon: "»" }
+      { delta: -steps.big, icon: "«", big: true },
+      { delta: -steps.small, icon: "‹", big: false },
+      { delta: steps.small, icon: "›", big: false },
+      { delta: steps.big, icon: "»", big: true }
     ].forEach(function (stepDef) {
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "scale-step-btn";
+      // The big (« »)  step buttons are hidden on narrow screens (see the
+      // max-width:560px rule) so the row keeps the same single-line layout
+      // as the wide view instead of wrapping/stacking.
+      btn.className = "scale-step-btn" + (stepDef.big ? " scale-step-btn-big" : "");
       btn.textContent = stepDef.icon;
       var deltaLabel = formatStepLabel(stepDef.delta);
       btn.title = deltaLabel;
