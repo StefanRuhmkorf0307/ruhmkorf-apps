@@ -15,27 +15,6 @@
     .col-amount, .col-baker { width: 12%; }
     .col-remove { width: 7%; }
   }
-  table.ingredients tbody tr.hint-row {
-    border-top: none;
-  }
-  table.ingredients tbody tr.hint-row td {
-    padding-top: 0;
-    padding-bottom: 8px;
-    font-size: 0.78rem;
-    color: var(--color-text-muted);
-    font-style: italic;
-    line-height: 1.3;
-  }
-  @media (max-width: 560px) {
-    table.ingredients tbody tr.hint-row {
-      display: block;
-      padding: 0 0 8px;
-    }
-    table.ingredients tbody tr.hint-row td {
-      display: block;
-      grid-column: 1 / -1;
-    }
-  }
   /* Custom suggestion dropdown for the description field. A native
      <datalist> filters its options by whatever's already typed, which we
      don't want - the full, unfiltered suggestion list for the selected
@@ -307,9 +286,6 @@
     other:    { flour: 0,   water: 0 }
   };
 
-  // Categories whose flour/water assumption is not obvious from the name alone
-  // get a small hint shown under the category dropdown (see hint*-keys below).
-  var CATEGORIES_WITH_HINT = ["liquid", "starter", "other"];
   // These categories don't get a description field at all - their name is
   // implied by the category itself (Mehl/Wasser/Salz), so there's nothing
   // meaningful to type in.
@@ -391,9 +367,6 @@
     de: {
       ingredientsHeading: "Zutaten",
       colName: "Zusatzinfo", colCategory: "Zutat", colAmount: "Menge (g)", colBaker: "Bäcker-%",
-      hintLiquid: "Angenommen: 0% Mehl, 100% Wasser",
-      hintStarter: "Angenommen: 50% Mehl, 50% Wasser (Hydration 100%)",
-      hintOther: "Angenommen: 0% Mehl, 0% Wasser (kein Beitrag zur Hydration)",
       addIngredient: "+ Zutat hinzufügen",
       loadExample: "Beispielrezept laden",
       clearAll: "Alles löschen",
@@ -401,8 +374,8 @@
       statDough: "Gesamtteiggewicht", statFlour: "Gesamtmehlgewicht", statWater: "Gesamtwassergewicht",
       statHydration: "Hydration", statBreadWeight: "Erwartetes Brotgewicht",
       statDoughExplain: "Summe der Mengen aller Zutaten.",
-      statFlourExplain: "Summe aus Menge × Mehlanteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Mehl).",
-      statWaterExplain: "Summe aus Menge × Wasseranteil über alle Zutaten (z.B. zählt Anstellgut anteilig als Wasser).",
+      statFlourExplain: "Summe aus Menge × Mehlanteil über alle Zutaten. Mehl zählt zu 100%, Anstellgut anteilig nach dem gewählten Mehl:Wasser-Verhältnis; Sonstiges flüssig und Sonstiges fest zählen nicht zum Mehlanteil.",
+      statWaterExplain: "Summe aus Menge × Wasseranteil über alle Zutaten. Wasser und Sonstiges flüssig zählen zu 100%, Anstellgut anteilig nach dem gewählten Mehl:Wasser-Verhältnis; Sonstiges fest zählt nicht zum Wasseranteil.",
       statHydrationExplain: "Gesamtwassergewicht geteilt durch Gesamtmehlgewicht, × 100.",
       statBreadWeightExplain: "Gesamtteiggewicht abzüglich 15% Backverlust beim Backen.",
       scaleHeading: "Rezept skalieren",
@@ -418,9 +391,6 @@
     en: {
       ingredientsHeading: "Ingredients",
       colName: "Additional info", colCategory: "Ingredient", colAmount: "Amount (g)", colBaker: "Baker's %",
-      hintLiquid: "Assumed: 0% flour, 100% water",
-      hintStarter: "Assumed: 50% flour, 50% water (100% hydration)",
-      hintOther: "Assumed: 0% flour, 0% water (no contribution to hydration)",
       addIngredient: "+ Add ingredient",
       loadExample: "Load example recipe",
       clearAll: "Clear all",
@@ -428,8 +398,8 @@
       statDough: "Total dough weight", statFlour: "Total flour weight", statWater: "Total water weight",
       statHydration: "Hydration", statBreadWeight: "Expected bread weight",
       statDoughExplain: "Sum of the amounts of all ingredients.",
-      statFlourExplain: "Sum of amount × flour share across all ingredients (e.g. starter counts proportionally as flour).",
-      statWaterExplain: "Sum of amount × water share across all ingredients (e.g. starter counts proportionally as water).",
+      statFlourExplain: "Sum of amount × flour share across all ingredients. Flour counts as 100%, starter counts proportionally per its chosen flour:water ratio; other (liquid) and other (solid) don't count toward the flour share.",
+      statWaterExplain: "Sum of amount × water share across all ingredients. Water and other (liquid) count as 100%, starter counts proportionally per its chosen flour:water ratio; other (solid) doesn't count toward the water share.",
       statHydrationExplain: "Total water weight divided by total flour weight, × 100.",
       statBreadWeightExplain: "Total dough weight minus a flat 15% baking loss.",
       scaleHeading: "Scale recipe",
@@ -560,7 +530,6 @@
         var pct = starterRatioPercents(ratio.hydration);
         ing.flourPct = pct.flour;
         ing.waterPct = pct.water;
-        refreshHintRow(ing);
       }
     }
 
@@ -723,49 +692,6 @@
     tr.appendChild(tdBaker);
     tr.appendChild(tdRemove);
     return tr;
-  }
-
-  // Starter/Anstellgut can have a different flour:water ratio per row (see
-  // the starter-ratio suggestions above), so its hint reflects that row's
-  // actual flourPct/waterPct instead of one fixed category-wide assumption.
-  function computeHintText(ing) {
-    if (CATEGORIES_WITH_HINT.indexOf(ing.category) === -1) return null;
-    if (ing.category === "starter") {
-      var flourPct = Number(ing.flourPct) || 0;
-      var waterPct = Number(ing.waterPct) || 0;
-      var hydrationPct = flourPct > 0 ? (waterPct / flourPct * 100) : null;
-      if (state.lang === "de") {
-        return "Angenommen: " + fmt(flourPct, 1) + "% Mehl, " + fmt(waterPct, 1) + "% Wasser" +
-          (hydrationPct !== null ? " (Hydration " + fmt(hydrationPct, 0) + "%)" : "");
-      }
-      return "Assumed: " + fmt(flourPct, 1) + "% flour, " + fmt(waterPct, 1) + "% water" +
-        (hydrationPct !== null ? " (" + fmt(hydrationPct, 0) + "% hydration)" : "");
-    }
-    return t("hint" + ing.category.charAt(0).toUpperCase() + ing.category.slice(1));
-  }
-
-  function renderHintRow(ing) {
-    var text = computeHintText(ing);
-    if (text === null) return null;
-    var tr = document.createElement("tr");
-    tr.className = "hint-row";
-    tr.dataset.hintFor = ing._id;
-    var td = document.createElement("td");
-    td.colSpan = 5;
-    td.textContent = "ⓘ " + text;
-    tr.appendChild(td);
-    return tr;
-  }
-
-  // Lightweight update used while typing in the description field: only
-  // touches the hint row's text, so it doesn't rebuild the row and steal
-  // focus/cursor position out of the input the person is still typing in.
-  function refreshHintRow(ing) {
-    var tr = document.querySelector('#ingredients-body tr.hint-row[data-hint-for="' + ing._id + '"]');
-    if (!tr) return;
-    var text = computeHintText(ing);
-    var td = tr.querySelector("td");
-    if (td && text !== null) td.textContent = "ⓘ " + text;
   }
 
   function renderSummaryAndBakerPercents() {
@@ -987,8 +913,6 @@
     tbody.innerHTML = "";
     state.ingredients.forEach(function (ing) {
       tbody.appendChild(renderRow(ing, totals));
-      var hintRow = renderHintRow(ing);
-      if (hintRow) tbody.appendChild(hintRow);
     });
     renderSummaryAndBakerPercents();
   }
