@@ -116,6 +116,15 @@ header.site-header {
   flex: none;
 }
 
+/* Das Zeichen im Seitenkopf gibt es in zwei Formen: als Bild (Rechner-Seite,
+   siehe favicon.svg) und als Buchstabenkachel (Sammelseite, solange dort noch
+   kein eigenes Zeichen existiert). Die Bildvariante bringt Flaeche und Rundung
+   selbst mit, deshalb muss der Kachelhintergrund hier wieder weg - sonst
+   schaut er an den abgerundeten Ecken hervor. */
+img.logo-mark {
+  background: none;
+}
+
 .brand .brand-name {
   font-weight: 700;
   font-size: 1.15rem;
