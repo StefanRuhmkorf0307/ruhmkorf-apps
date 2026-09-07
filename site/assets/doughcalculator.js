@@ -108,12 +108,18 @@
       loadExample: "Beispielrezept laden",
       clearAll: "Alles löschen",
       summaryHeading: "Übersicht",
-      statDough: "Gesamtteiggewicht", statFlour: "Gesamtmehlgewicht", statWater: "Gesamtwassergewicht",
+      // \u00AD ist ein weiches Trennzeichen: unsichtbar, solange die Zeile
+      // passt, und ergibt beim Umbruch einen Bindestrich an sinnvoller
+      // Stelle. Ohne das bricht z.B. "GESAMTTEIGGEWICHT" in der halbbreiten
+      // Uebersichtskachel auf dem Handy mitten im Wort um.
+      statDough: "Gesamtteig\u00ADgewicht", statFlour: "Gesamtmehl\u00ADgewicht", statWater: "Gesamtwasser\u00ADgewicht",
       statHydration: "Hydration", statBreadWeight: "Erwartetes Brotgewicht",
       statDoughExplain: "Summe der Mengen aller Zutaten.",
       statFlourExplain: "Summe aus Menge × Mehlanteil über alle Zutaten. Mehl zählt zu 100%, Anstellgut anteilig nach dem gewählten Mehl:Wasser-Verhältnis; Sonstiges flüssig und Sonstiges fest zählen nicht zum Mehlanteil.",
       statWaterExplain: "Summe aus Menge × Wasseranteil über alle Zutaten. Wasser und Sonstiges flüssig zählen zu 100%, Anstellgut anteilig nach dem gewählten Mehl:Wasser-Verhältnis; Sonstiges fest zählt nicht zum Wasseranteil.",
       statHydrationExplain: "Gesamtwassergewicht geteilt durch Gesamtmehlgewicht, × 100.",
+      statDoughYield: "Teigausbeute (TA)",
+      statDoughYieldExplain: "Mehl plus Wasser, geteilt durch das Mehl, × 100 – der im deutschen Backhandwerk übliche Wert. Liegt rechnerisch immer 100 über der Hydration.",
       statBreadWeightExplain: "Gesamtteiggewicht abzüglich 15% Backverlust beim Backen.",
       scaleHeading: "Rezept skalieren",
       scaleNote: "Passe Teiggewicht, Brotgewicht oder eine einzelne Zutat an – der Rest wird proportional mitskaliert, die Bäckerprozente bleiben dabei unverändert.",
@@ -123,7 +129,28 @@
       impressumContact: "Kontakt",
       removeIngredient: "Zutat entfernen",
       errNoFlour: "Bitte mindestens eine Zutat mit Mehlanteil > 0 eingeben, um Hydration/Bäckerprozente zu berechnen.",
-      confirmClear: "Wirklich alle Zutaten löschen?"
+      confirmClear: "Wirklich alle Zutaten löschen?",
+
+      // Seitentitel und Einleitung. pageTitle setzt das <title>-Element (siehe
+      // applyI18n) - ohne das bliebe der Tab-Titel beim Sprachwechsel deutsch.
+      pageTitle: "Sauerteig-Rechner: Bäckerprozente, Hydration & Teigausbeute",
+      pageHeading: "Sauerteig-Rechner",
+      pageLede: "Trage deine Zutaten ein – der Rechner ermittelt Bäckerprozente, Hydration, Teigausbeute und das zu erwartende Brotgewicht. Rezepte lassen sich auf jede gewünschte Menge umrechnen, ohne Anmeldung und direkt im Browser.",
+
+      teaserHeading: "DoughPilot – demnächst",
+      teaserText: "Der Rechner macht die Zahlen. DoughPilot macht den Rest: eine iPhone-App, die dich phasenweise durch den Backtag führt und die Zeiten an deine Teigtemperatur anpasst. Die App ist gerade in Arbeit – diese Seite sagt Bescheid, sobald es losgeht.",
+
+      explainHeading: "Was der Rechner berechnet",
+      explainBakerHeading: "Bäckerprozent",
+      explainBakerText: "Beim Bäckerprozent wird jede Zutat ins Verhältnis zum Gesamtmehlgewicht gesetzt, das dabei immer 100 % entspricht. Ein Rezept mit 1.000 g Mehl und 700 g Wasser hat also 70 % Wasser, unabhängig davon, wie groß der Ansatz insgesamt ist. Genau das macht die Angabe nützlich: Rezepte unterschiedlicher Größe werden direkt vergleichbar, und das Umrechnen auf eine andere Menge ist reine Multiplikation.",
+      explainHydrationHeading: "Hydration",
+      explainHydrationText: "Die Hydration ist der Wasseranteil in Bäckerprozent, also das Gesamtwassergewicht geteilt durch das Gesamtmehlgewicht. Anstellgut zählt dabei anteilig mit: Bei einem Verhältnis von 1:1 bestehen 200 g Anstellgut aus 100 g Mehl und 100 g Wasser, beides fließt in die Rechnung ein. Weiche, offenporige Teige liegen typischerweise zwischen 70 und 85 %, festere Brotteige darunter.",
+      explainTaHeading: "Teigausbeute (TA)",
+      explainTaText: "Die Teigausbeute, kurz TA, beschreibt dasselbe wie die Hydration, wird aber anders gerechnet: Mehl plus Wasser, geteilt durch das Mehl. Sie liegt deshalb immer genau 100 über der Hydration – aus 70 % Hydration wird eine TA von 170. Im deutschen Backhandwerk ist die TA die geläufigere Angabe, in englischsprachigen Rezepten findet sich fast immer die Hydration.",
+      explainBreadHeading: "Brotgewicht und Backverlust",
+      explainBreadText: "Beim Backen verdunstet Wasser, das fertige Brot wiegt also weniger als der rohe Teig. Der Rechner setzt dafür pauschal 15 % an. Der tatsächliche Verlust hängt von Backzeit, Temperatur und Form ab: flache Brote verlieren mehr als hohe, lange Backzeiten mehr als kurze.",
+      explainScaleHeading: "Rezepte skalieren",
+      explainScaleText: "Beim Skalieren wird ein einziger Faktor auf alle Zutaten angewendet. Die Bäckerprozente bleiben dabei unverändert, das Rezept behält also seinen Charakter. Als Ausgangspunkt kannst du ein Ziel-Teiggewicht angeben, ein gewünschtes Brotgewicht, oder die Menge einer einzelnen Zutat – etwa wenn noch genau 300 g Mehl im Schrank stehen."
     },
     en: {
       ingredientsHeading: "Ingredients",
@@ -138,6 +165,8 @@
       statFlourExplain: "Sum of amount × flour share across all ingredients. Flour counts as 100%, starter counts proportionally per its chosen flour:water ratio; other (liquid) and other (solid) don't count toward the flour share.",
       statWaterExplain: "Sum of amount × water share across all ingredients. Water and other (liquid) count as 100%, starter counts proportionally per its chosen flour:water ratio; other (solid) doesn't count toward the water share.",
       statHydrationExplain: "Total water weight divided by total flour weight, × 100.",
+      statDoughYield: "Dough yield (TA)",
+      statDoughYieldExplain: "Flour plus water, divided by the flour, × 100 – the German baking convention (Teigausbeute). Always exactly 100 above the hydration.",
       statBreadWeightExplain: "Total dough weight minus a flat 15% baking loss.",
       scaleHeading: "Scale recipe",
       scaleNote: "Adjust dough weight, bread weight, or a single ingredient - everything else scales along with it, and baker's percentages stay the same.",
@@ -147,7 +176,26 @@
       impressumContact: "Contact",
       removeIngredient: "Remove ingredient",
       errNoFlour: "Please enter at least one ingredient with flour % > 0 to calculate hydration/baker's percentages.",
-      confirmClear: "Really clear all ingredients?"
+      confirmClear: "Really clear all ingredients?",
+
+      pageTitle: "Sourdough Calculator: Baker's Percentage & Hydration",
+      pageHeading: "Sourdough Calculator",
+      pageLede: "Enter your ingredients and the calculator works out baker's percentages, hydration, dough yield and the expected bread weight. Scale any recipe to the amount you need – no sign-up, right in your browser.",
+
+      teaserHeading: "DoughPilot – coming soon",
+      teaserText: "The calculator handles the numbers. DoughPilot handles the rest: an iPhone app that walks you through the bake phase by phase and adapts the timings to your dough temperature. It's in the works – this page will say so once it's ready.",
+
+      explainHeading: "What the calculator works out",
+      explainBakerHeading: "Baker's percentage",
+      explainBakerText: "In baker's percentages every ingredient is expressed relative to the total flour weight, which always counts as 100%. A recipe with 1,000 g of flour and 700 g of water is therefore at 70% water, no matter how large the batch is. That is what makes the notation useful: recipes of different sizes become directly comparable, and scaling to a different amount is plain multiplication.",
+      explainHydrationHeading: "Hydration",
+      explainHydrationText: "Hydration is the water content in baker's percentages – total water weight divided by total flour weight. Starter counts proportionally: at a 1:1 ratio, 200 g of starter is 100 g of flour and 100 g of water, and both go into the calculation. Slack, open-crumb doughs typically sit between 70 and 85%, firmer bread doughs below that.",
+      explainTaHeading: "Dough yield (Teigausbeute)",
+      explainTaText: "German recipes rarely quote hydration. They use Teigausbeute (TA) instead, which describes the same thing but is calculated differently: flour plus water, divided by the flour. The result is always exactly 100 higher than the hydration – 70% hydration is a TA of 170. Worth knowing if you bake from German sources.",
+      explainBreadHeading: "Bread weight and baking loss",
+      explainBreadText: "Water evaporates during baking, so the finished loaf weighs less than the raw dough. The calculator assumes a flat 15%. The actual loss depends on baking time, temperature and shape: flat loaves lose more than tall ones, long bakes more than short ones.",
+      explainScaleHeading: "Scaling recipes",
+      explainScaleText: "Scaling applies a single factor to every ingredient. The baker's percentages stay untouched, so the recipe keeps its character. You can start from a target dough weight, a desired bread weight, or the amount of a single ingredient – handy when you have exactly 300 g of flour left in the cupboard."
     }
   };
 
@@ -214,6 +262,10 @@
 
   function applyI18n() {
     document.documentElement.lang = state.lang;
+    // Der Tab-/Suchmaschinentitel steckt nicht im Body und wird deshalb von
+    // der data-i18n-Schleife unten nicht erfasst - hier separat setzen, sonst
+    // bliebe er nach einem Wechsel auf EN weiterhin deutsch.
+    if (I18N[state.lang].pageTitle) document.title = I18N[state.lang].pageTitle;
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
       var key = el.getAttribute("data-i18n");
       if (I18N[state.lang][key] !== undefined) el.textContent = I18N[state.lang][key];
@@ -240,8 +292,13 @@
       totalWater += amount * (Number(i.waterPct) || 0) / 100;
     });
     var hydration = totalFlour > 0 ? (totalWater / totalFlour) * 100 : null;
+    // Teigausbeute (TA), die im deutschen Backhandwerk uebliche Angabe:
+    // (Mehl + Wasser) / Mehl × 100. Das ist algebraisch immer Hydration + 100,
+    // wird hier aber bewusst aus derselben Quelle abgeleitet statt separat
+    // aufsummiert - so koennen die beiden Werte nie auseinanderlaufen.
+    var doughYield = hydration === null ? null : hydration + 100;
     var breadWeight = totalDough * (1 - BAKE_LOSS);
-    return { totalDough: totalDough, totalFlour: totalFlour, totalWater: totalWater, hydration: hydration, breadWeight: breadWeight };
+    return { totalDough: totalDough, totalFlour: totalFlour, totalWater: totalWater, hydration: hydration, doughYield: doughYield, breadWeight: breadWeight };
   }
 
   function bakerPercent(ing, totals) {
@@ -451,6 +508,10 @@
     document.getElementById("stat-water").textContent = fmt(totals.totalWater, 0) + " g";
     document.getElementById("stat-hydration").textContent = totals.hydration === null ? t("errNoFlour") : fmt(totals.hydration, 1) + " %";
     document.getElementById("stat-hydration").style.fontSize = totals.hydration === null ? "0.8rem" : "";
+    // Ohne Einheit: die TA wird konventionell als blosse Zahl angegeben
+    // ("TA 165"), nicht als Prozentwert. fmt() liefert bei null ein "–", die
+    // Fehlermeldung steht schon in der Hydration-Kachel daneben.
+    document.getElementById("stat-ta").textContent = fmt(totals.doughYield, 1);
     document.getElementById("stat-bread").textContent = fmt(totals.breadWeight, 0) + " g";
 
     document.querySelectorAll("#ingredients-body tr").forEach(function (tr) {

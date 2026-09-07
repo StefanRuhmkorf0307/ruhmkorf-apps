@@ -122,10 +122,46 @@ h2 {
   margin: 0 0 12px;
 }
 
+h3 {
+  font-size: 0.98rem;
+  margin: 20px 0 6px;
+}
+
 p.lede {
   color: var(--color-text-muted);
   max-width: 60ch;
   margin: 0 0 28px;
+}
+
+/* Fliesstext-Abschnitte (z.B. die Erklaerungen unter dem Rechner).
+   Schmalere Zeilen als der Rest der Seite - eine Textspalte ueber die
+   vollen 880px waere unangenehm zu lesen. */
+.prose p {
+  color: var(--color-text-muted);
+  max-width: 68ch;
+  margin: 0 0 4px;
+}
+
+.prose h3:first-of-type {
+  margin-top: 8px;
+}
+
+/* Hinweis auf die kommende DoughPilot-App. Bewusst abgesetzt vom Rest:
+   das ist der einzige Kanal, ueber den Besucher vom App-Start erfahren
+   (es wird keine E-Mail-Liste gesammelt), also darf er auffallen. */
+.teaser-card {
+  background: linear-gradient(180deg, #fdf6ec 0%, var(--color-surface) 100%);
+  border-color: #e2cfae;
+}
+
+.teaser-card h2 {
+  color: var(--color-primary-dark);
+}
+
+.teaser-card p {
+  margin: 0;
+  color: var(--color-text-muted);
+  max-width: 68ch;
 }
 
 .card {
@@ -425,28 +461,40 @@ table.ingredients .col-amount input::-webkit-inner-spin-button {
 
   /* Paired summary tiles (Brotgewicht/Teiggewicht, Mehlgewicht/Wassergewicht)
      are half-width here, too narrow for the uppercase label at full size -
-     shrink it a bit so words wrap on spaces instead of breaking mid-word. */
+     shrink it a bit so words wrap on spaces instead of breaking mid-word.
+     Fuer echte Bandwuermer ("GESAMTTEIGGEWICHT") reicht das nicht: die
+     brechen sonst per overflow-wrap mitten im Wort um. hyphens:auto ist
+     hier nur die Absicherung - es haengt daran, dass der Browser
+     Trennmuster fuer die Sprache mitbringt (headless Chromium z.B. nicht).
+     Verlassen tut sich das Layout deshalb auf die weichen Trennzeichen
+     (U+00AD) in den betroffenen Labels, siehe I18N in doughcalculator.js. */
   .summary-pair .summary-label {
     font-size: 0.66rem;
     letter-spacing: 0.01em;
+    hyphens: auto;
+    -webkit-hyphens: auto;
   }
   .summary-pair .summary-value {
     font-size: 1.1rem;
   }
 
-  /* Mehlgewicht/Wassergewicht get noticeably longer explanations than the
-     other tiles (the flour/water assumptions live there, see statFlourExplain
-     /statWaterExplain) - stack them full-width instead of squeezing both
-     into half a row, and undo the half-width font shrink above since each
-     tile now has the full row to itself again. */
-  .summary-pair-flour-water {
+  /* Zwei Paare tragen deutlich laengere Erklaerungen als die uebrigen
+     Kacheln: Mehl-/Wassergewicht (dort stehen die Mehl-/Wasserannahmen,
+     siehe statFlourExplain/statWaterExplain) und Hydration/Teigausbeute.
+     Die stapeln hier auf volle Breite, statt sich zu zweit eine Zeile zu
+     teilen - und bekommen die halbbreite Schriftverkleinerung von oben
+     wieder zurueck, weil jede Kachel nun die ganze Zeile hat. */
+  .summary-pair-flour-water,
+  .summary-pair-stacked {
     flex-direction: column;
   }
-  .summary-pair-flour-water .summary-label {
+  .summary-pair-flour-water .summary-label,
+  .summary-pair-stacked .summary-label {
     font-size: 0.75rem;
     letter-spacing: 0.03em;
   }
-  .summary-pair-flour-water .summary-value {
+  .summary-pair-flour-water .summary-value,
+  .summary-pair-stacked .summary-value {
     font-size: 1.3rem;
   }
 
