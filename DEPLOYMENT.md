@@ -8,19 +8,19 @@ ein Webspace für die Domain, aktuell u.a. mit Click & Build und Mail belegt.
 ## Schritt 1 – GitHub-Repo anlegen
 
 1. Auf [github.com](https://github.com) ein neues, privates Repository
-   anlegen (z.B. `sauerteig-tools`).
+   namens **`ruhmkorf-apps`** anlegen.
 2. Diesen kompletten Ordner (wie geliefert, inkl. `.github/`, `site/`,
-   `.gitignore`, `README.md`, `DEPLOYMENT.md`) in das Repo pushen:
+   `.gitignore`, `README.md`, `DEPLOYMENT.md`, bereits mit erstem Commit
+   auf Branch `main`) in das Repo pushen:
 
    ```bash
-   cd sauerteig-tools
-   git init                     # falls noch nicht geschehen
-   git add .
-   git commit -m "Initial commit: DoughCalculator + Sammelseite"
-   git branch -M main
-   git remote add origin git@github.com:<dein-user>/sauerteig-tools.git
+   cd ruhmkorf-apps
+   git remote add origin git@github.com:<dein-github-user>/ruhmkorf-apps.git
    git push -u origin main
    ```
+
+   (Ein `git init`/`add`/`commit` ist nicht mehr nötig – das ZIP enthält
+   bereits ein initialisiertes Repo mit erstem Commit.)
 
 ## Schritt 2 – Subdomain + Zielverzeichnis bei IONOS anlegen
 
