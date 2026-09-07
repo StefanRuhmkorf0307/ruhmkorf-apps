@@ -1,15 +1,17 @@
-# Sauerteig Tools (Arbeitstitel)
+# Alltagshelfer
 
-Sammlung von statischen, framework-losen Web-Tools rund um Sauerteigbrot,
-parallel zur DoughPilot-iOS-App. Kein Login, keine Server-Komponente – reines
-HTML/CSS/JS, letzte Rezeptwerte werden über `localStorage` im Browser
-gemerkt (kein echtes HTTP-Cookie, aber funktional dasselbe Ziel: Werte
-bleiben ohne Konto erhalten).
+Sammlung von statischen, framework-losen Web-Tools für den Alltag. Aktuell
+dreht sich hier alles ums Sauerteigbrot (DoughCalculator, parallel zur
+DoughPilot-iOS-App), nach und nach sollen aber ganz unterschiedliche Helfer
+dazukommen. Kein Login, keine Server-Komponente – reines HTML/CSS/JS, letzte
+Rezeptwerte werden über `localStorage` im Browser gemerkt (kein echtes
+HTTP-Cookie, aber funktional dasselbe Ziel: Werte bleiben ohne Konto
+erhalten).
 
 ## Struktur
 
 ```
-sauerteig-tools/                (Repo-Root)
+ruhmkorf-apps/                  (Repo-Root)
 ├── .github/workflows/deploy.yml   automatisches Deployment nach IONOS (siehe DEPLOYMENT.md)
 ├── site/                          alles, was tatsächlich live geht
 │   ├── index.html                 Sammelseite (Übersicht/Landingpage, verlinkt alle Tools)
@@ -64,13 +66,10 @@ diese Datei manuell nachgezogen werden.
 
 ## Offene Punkte
 
-- **Domain/Branding:** Es ist noch keine Domain reserviert. Die
-  Sammelseite trägt aktuell den Arbeitstitel „Sauerteig Tools“ /
-  „Sourdough Tools“ als Platzhalter. Sobald ein Name/Domain feststeht
-  (siehe Namensvorschläge in `Sauerteig App und Website Namen.pdf` im
-  Projekt, z.B. DoughPilot/SourdoughLab/BreadPilot als Kandidaten für die
-  Gesamtmarke), müssen Titel, Meta-Tags und Branding in `index.html` sowie
-  `doughcalculator/index.html` angepasst werden.
+- **Branding:** Die Sammelseite heißt jetzt „Alltagshelfer“ (bewusst
+  allgemein statt sauerteig-spezifisch, siehe `index.html`) - eine eigene
+  Domain dafür ist noch nicht reserviert, die Seite läuft weiter unter
+  `apps.ruhmkorf.de`.
 - **DoughPilot Web:** Auf der Sammelseite als „Demnächst“-Kachel
   vorbereitet (`index.html`, `.tool-card.disabled`). Sobald die
   Web-Version existiert (laut Projektübersicht geplant über
