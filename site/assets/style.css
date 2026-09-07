@@ -202,6 +202,24 @@ footer.site-footer {
   font-size: 0.85rem;
 }
 
+footer.site-footer .impressum-heading {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+}
+
+footer.site-footer address {
+  font-style: normal;
+  line-height: 1.6;
+}
+
+footer.site-footer address a {
+  color: inherit;
+}
+
 /* Forms / table used by DoughCalculator */
 
 table.ingredients {
