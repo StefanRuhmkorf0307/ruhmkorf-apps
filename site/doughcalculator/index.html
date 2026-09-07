@@ -654,30 +654,40 @@
     amountInput.min = "0";
     // The spinner/keyboard step (and the displayed precision) adapt to the
     // current amount's magnitude, same as the "Rezept skalieren" steppers:
-    // fine 0.1g nudges under 10g, whole grams from 10g up.
-    function refreshAmountStepAndValue(commitValue) {
+    // fine 0.1g nudges under 10g, whole grams from 10g up. This only ever
+    // formats amountInput's own text/step - it must NEVER write back into
+    // ing.amount, because renderRow() (and so this whole function) reruns on
+    // every render(), including after every proportional rescale; rounding
+    // the stored amount here on every render used to quietly re-introduce
+    // exactly the drift/zero-rounding that scaling must not cause.
+    function refreshAmountDisplay() {
       var steps = stepSizesForValue(ing.amount);
       amountInput.step = steps.small < 1 ? "0.1" : String(steps.small);
-      if (commitValue) {
-        var rounded = steps.small < 1
-          ? Math.round((Number(ing.amount) || 0) * 10) / 10
-          : Math.round(Number(ing.amount) || 0);
-        ing.amount = rounded;
-        amountInput.value = steps.small < 1 ? rounded.toFixed(1) : rounded;
-      }
+      amountInput.value = steps.small < 1
+        ? (Number(ing.amount) || 0).toFixed(1)
+        : Math.round(Number(ing.amount) || 0);
       return steps;
     }
-    refreshAmountStepAndValue(true);
+    refreshAmountDisplay();
     amountInput.addEventListener("input", function () {
       ing.amount = amountInput.value === "" ? 0 : parseFloat(amountInput.value);
-      // Only update the step size here, not the displayed text - reformatting
-      // mid-keystroke (e.g. appending ".0") would fight with typing.
-      refreshAmountStepAndValue(false);
+      // Only update the step attribute here, not the displayed text -
+      // reformatting mid-keystroke (e.g. appending ".0") would fight with
+      // typing.
+      var steps = stepSizesForValue(ing.amount);
+      amountInput.step = steps.small < 1 ? "0.1" : String(steps.small);
       scheduleSave();
       renderSummaryAndBakerPercents();
     });
     amountInput.addEventListener("blur", function () {
-      refreshAmountStepAndValue(true);
+      // NOW it's fine to snap the just-typed value to the display precision -
+      // this only happens once, right after the person finished editing this
+      // exact field by hand, not as a side effect of scaling elsewhere.
+      var steps = stepSizesForValue(ing.amount);
+      ing.amount = steps.small < 1
+        ? Math.round((Number(ing.amount) || 0) * 10) / 10
+        : Math.round(Number(ing.amount) || 0);
+      refreshAmountDisplay();
       scheduleSave();
       renderSummaryAndBakerPercents();
     });
@@ -791,7 +801,9 @@
       var refIng = state.ingredients.find(function (i) { return i._id === refId; });
       if (!refIng) return;
       if (!(Number(refIng.amount) > 0)) {
-        refIng.amount = Math.round(newValue * 10) / 10;
+        // Stored as-is, unrounded - see the note below on why the internal
+        // value is never rounded.
+        refIng.amount = newValue;
         scheduleSave();
         render();
         return;
@@ -811,18 +823,20 @@
     }
     if (factor === null || !isFinite(factor) || factor <= 0) return;
 
+    // The internal amount is deliberately kept at full (unrounded) floating-
+    // point precision here - only the display layer (renderRow/renderScaleList,
+    // via stepSizesForValue) rounds for showing a value. Rounding every
+    // ingredient to 0.1g on every single scale step is what previously (a)
+    // very slightly shifted baker's percentages away from their exact ratio
+    // with each rescale, and (b) could round a small ingredient down to
+    // exactly 0, which both breaks its own percentage and, if it happened to
+    // a flour-category ingredient, made totalFlour 0 and broke every
+    // percentage in the recipe. Multiplying an exact positive amount by an
+    // exact positive factor is always positive and always keeps
+    // amount/totalFlour exactly the same ratio it was before scaling, so
+    // neither problem can occur anymore.
     state.ingredients.forEach(function (ing) {
-      var current = Number(ing.amount) || 0;
-      var scaled = Math.round(current * factor * 10) / 10;
-      // Proportional scaling must never zero out an ingredient that
-      // currently has an amount - baker's percentages are amount/total
-      // flour, so a flour-category ingredient rounding down to 0 would
-      // make totalFlour 0 and break every percentage in the recipe (and
-      // even for a non-flour ingredient it's a real, visible jump to 0%,
-      // not the unchanged percentage scaling is supposed to preserve).
-      // 0.1g is the smallest step this app works with, so that's the floor.
-      if (current > 0 && scaled <= 0) scaled = 0.1;
-      ing.amount = scaled;
+      ing.amount = (Number(ing.amount) || 0) * factor;
     });
     scheduleSave();
     render();
