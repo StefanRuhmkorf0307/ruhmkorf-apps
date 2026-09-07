@@ -15,6 +15,18 @@
     .col-amount, .col-baker { width: 12%; }
     .col-remove { width: 7%; }
   }
+  @media (max-width: 560px) {
+    /* Zusatzinfo (.col-name) is hidden below this width (see style.css) -
+       the remaining four columns take its place, keeping the same row
+       layout as the wide view instead of switching to a stacked layout.
+       col-remove gets enough room for the 40x40 touch-sized icon button
+       (see style.css); col-amount is an input and needs more breathing
+       room than col-baker, which is just static text. */
+    .col-category { width: 34%; }
+    .col-amount { width: 24%; }
+    .col-baker { width: 18%; }
+    .col-remove { width: 24%; }
+  }
   /* Custom suggestion dropdown for the description field. A native
      <datalist> filters its options by whatever's already typed, which we
      don't want - the full, unfiltered suggestion list for the selected

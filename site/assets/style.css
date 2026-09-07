@@ -210,13 +210,13 @@ table.ingredients {
   font-size: 0.92rem;
 }
 
-@media (min-width: 561px) {
-  table.ingredients {
-    /* Fixed layout so the declared column widths (see the page-specific
-       .col-* rules) are honored exactly - "auto" layout only treats them
-       as hints and was truncating the longest category label. */
-    table-layout: fixed;
-  }
+table.ingredients {
+  /* Fixed layout so the declared column widths (see the page-specific
+     .col-* rules) are honored exactly - "auto" layout only treats them
+     as hints and was truncating the longest category label. Applies at
+     every width: the mobile view keeps the same row layout as desktop
+     (just with the Zusatzinfo column hidden), not a different layout. */
+  table-layout: fixed;
 }
 
 table.ingredients th {
@@ -249,6 +249,18 @@ table.ingredients select {
 
 table.ingredients .col-amount input {
   text-align: right;
+  /* Hide the native up/down spinner - it eats into the already tight
+     column width (especially on mobile, see the max-width:560px block
+     below) without adding anything the +/- stepper buttons in "Rezept
+     skalieren" don't already do better. */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+table.ingredients .col-amount input::-webkit-outer-spin-button,
+table.ingredients .col-amount input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .icon-btn {
@@ -409,53 +421,24 @@ table.ingredients .col-amount input {
     font-size: 1.1rem;
   }
 
-  /* Force a real block/grid context: without this, td elements keep their
-     native table-cell sizing (shrink-to-fit) even though the row above them
-     is display:grid, which made name/category fields render only ~25-40px
-     wide and unreadable. */
-  table.ingredients,
-  table.ingredients tbody {
-    display: block;
-    width: 100%;
-  }
-  table.ingredients thead {
+  /* Mobile keeps the same row-based table layout as the wide view, just
+     narrower - no separate stacked/card layout. The Zusatzinfo column is
+     the one column that can be dropped without losing anything essential
+     (category, amount and baker's-% stay visible and stay in one row). */
+  table.ingredients th.col-name,
+  table.ingredients td.col-name {
     display: none;
   }
-  table.ingredients tbody tr {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 10px;
-    padding: 12px 0;
-  }
-  table.ingredients td {
-    display: block;
-    width: auto;
-    padding: 2px 0;
-  }
-  table.ingredients td[data-label]::before {
-    content: attr(data-label);
-    display: block;
-    font-size: 0.72rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-  }
-  /* Name and category need the full row width to stay readable; amount and
-     baker's-% are short values and can share a row. */
-  table.ingredients td.col-name,
-  table.ingredients td.col-category {
-    grid-column: 1 / -1;
-  }
-  table.ingredients td.col-remove {
-    grid-column: 1 / -1;
-    text-align: right;
-  }
   /* 16px stops iOS Safari from auto-zooming the page when a field is
-     focused, and gives every input/select/button a comfortable touch size. */
+     focused, and gives every input/select/button a comfortable touch size.
+     Horizontal padding is tighter than the vertical one - with the
+     Zusatzinfo column gone, the remaining columns (esp. col-amount) are
+     narrow, and every pixel of padding is a pixel the value doesn't have. */
   table.ingredients input[type="text"],
   table.ingredients input[type="number"],
   table.ingredients select {
     font-size: 16px;
-    padding: 10px 10px;
+    padding: 10px 6px;
   }
   .icon-btn {
     width: 40px;
