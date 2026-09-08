@@ -547,6 +547,58 @@ table.ingredients .col-amount input::-webkit-inner-spin-button {
 }
 
 @media (max-width: 560px) {
+  /* Auf dem Handy zaehlt jeder Pixel Breite. Vom 375px-Bildschirm blieben
+     mit den Desktop-Abstaenden nur 293px fuer Text uebrig - der Fliesstext
+     brach schon bei 31 Zeichen je Zeile um. Engere Raender und schmalere
+     Kartenpolster bringen den Text auf 347px und rund 36 Zeichen. */
+  .wrap {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .card {
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  /* Selektor muss "header.site-header" lauten: Die Desktop-Regel weiter oben
+     ist genauso geschrieben und haette sonst die hoehere Spezifitaet. */
+  header.site-header {
+    padding: 16px 0 14px;
+    margin-bottom: 20px;
+  }
+  p.lede {
+    margin-bottom: 20px;
+  }
+
+  /* Drei Ebenen statt lauter gleich aussehender Karten: Karten sind
+     Werkzeug, die Uebersicht ist das Ergebnis, Fliesstext ist Beiwerk.
+     Der Erklaerabschnitt verliert deshalb seine Karte und steht direkt auf
+     dem Seitengrund - das schafft die Abgrenzung und gibt dem Text
+     zugleich die volle Breite. */
+  .card.prose {
+    background: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 4px 0 0;
+    margin-top: 14px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .card.summary-card {
+    border-color: var(--color-primary);
+    border-width: 2px;
+  }
+
+  /* Die Kacheln der Uebersicht etwas kompakter - bei zwoelf Erklaerzeilen
+     summiert sich das spuerbar. */
+  .summary-item {
+    padding: 8px 10px;
+  }
+  .summary-explain {
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
   /* Header can overflow on narrow phones (~320px) when the brand text and
      the language toggle compete for one row - let it wrap instead. */
   header.site-header {

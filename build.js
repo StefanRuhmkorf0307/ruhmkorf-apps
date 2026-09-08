@@ -105,12 +105,48 @@ function assetHash(name) {
   const file = path.join(SRC_ASSETS, name);
   let h = "0";
   if (fs.existsSync(file)) {
-    h = crypto.createHash("sha1").update(fs.readFileSync(file)).digest("hex").slice(0, 8);
+    // Ueber den bereinigten Inhalt hashen - ausgeliefert wird die Fassung
+    // ohne Metadaten, und der Parameter soll zu ihr passen.
+    h = crypto.createHash("sha1").update(stripMetadata(name, fs.readFileSync(file))).digest("hex").slice(0, 8);
   } else {
     problems.push(`Asset fehlt, kein Cache-Buster möglich: src/assets/${name}`);
   }
   hashCache.set(name, h);
   return h;
+}
+
+/* Entfernt Metadaten, die sich beim Kopieren zwischen Rechnern an Bilddateien
+   anhaengen (Content Credentials nach C2PA). Am 07.09.2026 hatte das
+   favicon.svg dadurch 9,6 statt 1,8 KB - Ballast bei jedem Seitenaufruf, ohne
+   Nutzen fuer eine Web-Grafik. Hier statt an der Quelle, weil die Metadaten
+   bei jedem erneuten Uebertragen zurueckkaemen. */
+function stripMetadata(name, buf) {
+  if (name.endsWith(".svg")) {
+    const cleaned = buf.toString("utf8")
+      .replace(/<metadata>[\s\S]*?<\/metadata>\s*/g, "")
+      .replace(/\s+xmlns:c2pa="[^"]*"/g, "");
+    return Buffer.from(cleaned, "utf8");
+  }
+  if (name.endsWith(".png")) {
+    // PNG besteht aus Chunks: 4 Byte Laenge, 4 Byte Typ, Daten, 4 Byte CRC.
+    // Entfernt werden nur Textchunks und Content Credentials - alles, was
+    // zur Darstellung gehoert (IHDR, PLTE, IDAT, IEND, tRNS, sRGB, ...),
+    // bleibt unangetastet.
+    const DROP = new Set(["iTXt", "tEXt", "zTXt", "eXIf", "caBX"]);
+    const parts = [buf.subarray(0, 8)]; // Signatur
+    let off = 8;
+    while (off + 8 <= buf.length) {
+      const len = buf.readUInt32BE(off);
+      const type = buf.toString("ascii", off + 4, off + 8);
+      const end = off + 12 + len;
+      if (end > buf.length) break;
+      if (!DROP.has(type)) parts.push(buf.subarray(off, end));
+      off = end;
+      if (type === "IEND") break;
+    }
+    return Buffer.concat(parts);
+  }
+  return buf;
 }
 
 /* ---------- Transformationen ---------- */
@@ -211,9 +247,34 @@ function renderPage(page, lang, strings) {
     .concat([
       `<link rel="alternate" hreflang="x-default" href="${meta.baseUrl}${page.variants[meta.defaultLang].url}">`
     ]);
+  /* Open Graph steuert, wie die Seite beim Teilen in WhatsApp, Facebook,
+     Slack oder Foren aussieht. Ohne diese Angaben zeigen die Dienste
+     bestenfalls die nackte URL - fuer die geplanten Community-Posts der
+     entscheidende Unterschied. Das Vorschaubild ist optional: Die
+     Sammelseite bekommt keins, weil das vorhandene Motiv den Rechner beim
+     Namen nennt und dort in die Irre fuehren wuerde. */
+  const og = [
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:title" content="${escapeAttr(variant.title)}">`,
+    `<meta property="og:description" content="${escapeAttr(variant.description)}">`,
+    `<meta property="og:url" content="${meta.baseUrl}${variant.url}">`,
+    `<meta property="og:locale" content="${(meta.locales || {})[lang] || lang}">`
+  ];
+  if (variant.ogImage) {
+    og.push(
+      `<meta property="og:image" content="${meta.baseUrl}/assets/${variant.ogImage}?v=${assetHash(variant.ogImage)}">`,
+      `<meta property="og:image:width" content="1200">`,
+      `<meta property="og:image:height" content="630">`,
+      `<meta name="twitter:card" content="summary_large_image">`
+    );
+  } else {
+    og.push(`<meta name="twitter:card" content="summary">`);
+  }
+
   const head = [
     `<link rel="canonical" href="${meta.baseUrl}${variant.url}">`,
-    ...alternates
+    ...alternates,
+    ...og
   ].join("\n");
   html = html.replace("{{head-links}}", head);
 
@@ -226,6 +287,10 @@ function renderPage(page, lang, strings) {
     if (!target) { problems.push(`Unbekanntes Linkziel: ${targetId}`); return all; }
     return escapeAttr(relativeUrl(variant.path, target.variants[lang].path));
   });
+
+  /* Der QUELLE-Hinweis am Kopf der Vorlage richtet sich an den, der sie
+     bearbeitet - in der ausgelieferten Seite hat er nichts verloren. */
+  html = html.replace(/^<!--\s*QUELLE[\s\S]*?-->\s*/, "");
 
   const banner = `<!-- Erzeugt von build.js aus src/${page.source} - nicht von Hand bearbeiten.\n     Änderungen gehören in src/ bzw. in das I18N-Objekt der Rechner-Logik. -->\n`;
   return banner + html;
@@ -277,7 +342,7 @@ generated.set("sitemap.xml", buildSitemap());
 const assetFiles = fs.existsSync(SRC_ASSETS) ? fs.readdirSync(SRC_ASSETS) : [];
 if (!assetFiles.length) problems.push("src/assets/ ist leer oder fehlt");
 for (const name of assetFiles) {
-  generated.set("assets/" + name, fs.readFileSync(path.join(SRC_ASSETS, name)));
+  generated.set("assets/" + name, stripMetadata(name, fs.readFileSync(path.join(SRC_ASSETS, name))));
 }
 
 if (problems.length) {

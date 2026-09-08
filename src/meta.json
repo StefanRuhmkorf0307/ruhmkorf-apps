@@ -11,6 +11,7 @@
   ],
   "baseUrl": "https://apps.ruhmkorf.de",
   "defaultLang": "de",
+  "locales": { "de": "de_DE", "en": "en_US" },
   "pages": [
     {
       "id": "index",
@@ -39,12 +40,14 @@
         "de": {
           "path": "doughcalculator/index.html",
           "url": "/doughcalculator/",
+          "ogImage": "og-de.png",
           "title": "Sauerteig-Rechner: Bäckerprozente, Hydration & Teigausbeute",
           "description": "Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und Teigausbeute berechnen, Brotgewicht abschätzen und Rezepte auf jede Menge umrechnen."
         },
         "en": {
           "path": "doughcalculator/en/index.html",
           "url": "/doughcalculator/en/",
+          "ogImage": "og-en.png",
           "title": "Sourdough Calculator: Baker's Percentage & Hydration",
           "description": "Free sourdough calculator: work out baker's percentages, hydration and dough yield, estimate the bread weight and scale any recipe to the amount you need."
         }

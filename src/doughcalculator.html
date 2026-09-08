@@ -1,6 +1,7 @@
 <!-- QUELLE - wird von build.js zu site/doughcalculator/index.html (DE) und
-     site/doughcalculator/en/index.html (EN) verarbeitet. Danach 'node build.js'
-     ausfuehren und site/ mit committen.
+     site/doughcalculator/en/index.html (EN) verarbeitet. site/ liegt nicht im
+     Repository; der Deploy-Workflow baut es vor dem Upload selbst. Lokal
+     ansehen geht mit 'node build.js'.
 
      Achtung: Die Texte zwischen Tags mit data-i18n sind nur Platzhalter und
      werden beim Bauen ueberschrieben. Geaendert werden sie im I18N-Objekt in
@@ -254,7 +255,10 @@
       <div class="scale-list" id="scale-list"></div>
     </section>
 
-    <section class="card">
+    <!-- summary-card: Diese Karte traegt das Ergebnis, fuer das die Leute
+         gekommen sind. Auf dem Handy hebt sie sich deshalb staerker ab als
+         die Eingabekarten - siehe style.css. -->
+    <section class="card summary-card">
       <h2 data-i18n="summaryHeading">Übersicht</h2>
       <div class="summary-list">
         <div class="summary-pair summary-pair-stacked">
