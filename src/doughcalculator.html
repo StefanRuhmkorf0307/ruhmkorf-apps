@@ -39,11 +39,23 @@
        layout as the wide view instead of switching to a stacked layout.
        col-remove gets enough room for the 40x40 touch-sized icon button
        (see style.css); col-amount is an input and needs more breathing
-       room than col-baker, which is just static text. */
-    .col-category { width: 34%; }
-    .col-amount { width: 24%; }
-    .col-baker { width: 18%; }
-    .col-remove { width: 24%; }
+       room than col-baker, which is just static text.
+
+       Die Breiten sind am laengsten Inhalt der jeweiligen Spalte bemessen:
+       col-remove braucht nur die 40px des Knopfes (bei 24% waren es 76px,
+       also 36px Leerlauf), col-baker nur "87,0%". Was dort frei wird, geht
+       an col-category - deren Auswahlfeld schnitt "Anstellgut" bisher am
+       Aufklapp-Pfeil ab. Zusammen mit dem engeren Zellenpolster in
+       style.css stehen dem Text jetzt 92 statt 58px zur Verfuegung. Die
+       beiden langen Bezeichnungen ("Sonstiges fest/fluessig", 101 bzw.
+       120px) bleiben auch damit gekuerzt - sie ganz unterzubringen hiesse
+       jede andere Spalte auf ihr Minimum zu druecken, was auf 320px-
+       Geraeten wieder bricht. Aufgeklappt steht ohnehin die volle
+       Bezeichnung da. */
+    .col-category { width: 43%; }
+    .col-amount { width: 22%; }
+    .col-baker { width: 17%; }
+    .col-remove { width: 18%; }
   }
   /* Custom suggestion dropdown for the description field. A native
      <datalist> filters its options by whatever's already typed, which we

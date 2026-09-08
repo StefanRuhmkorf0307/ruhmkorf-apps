@@ -212,10 +212,17 @@ p.lede {
 
 /* Fliesstext-Abschnitte (z.B. die Erklaerungen unter dem Rechner).
    Schmalere Zeilen als der Rest der Seite - eine Textspalte ueber die
-   vollen 880px waere unangenehm zu lesen. */
+   vollen 880px waere unangenehm zu lesen.
+
+   Zum Wert: ch ist die Breite der Ziffer "0" und damit breiter als der
+   Durchschnittsbuchstabe - 68ch ergaben nachgemessen 67 bis 83 echte
+   Zeichen je Zeile, also am oberen Ende deutlich ueber der angenehm
+   lesbaren Spanne von 45 bis 75. Mit 55ch liegen dieselben Absaetze bei
+   60 bis 67 Zeichen. Auf dem Handy greift der Wert ohnehin nicht, dort
+   ist der Bildschirm schmaler als 55ch. */
 .prose p {
   color: var(--color-text-muted);
-  max-width: 68ch;
+  max-width: 55ch;
   margin: 0 0 4px;
 }
 
@@ -266,6 +273,34 @@ img.tool-icon {
   box-shadow: var(--shadow);
   padding: 20px;
   margin-bottom: 20px;
+}
+
+/* Drei Ebenen statt lauter gleich aussehender Karten: Die Karte ist das
+   Werkzeug, die Uebersicht das Ergebnis, der Fliesstext Beiwerk. Das ist
+   eine Frage der Bedeutung und nicht des Platzes - deshalb gilt es in
+   jeder Breite. (Anlass war die Enge auf dem Handy, das Argument gilt
+   aber genauso auf dem Desktop, und wer zwischen beiden wechselt, soll
+   dieselbe Gliederung vorfinden.)
+
+   Spezifitaet: ".card.summary-card" schlaegt ".card" oben, die
+   Reihenfolge im Stylesheet ist hier also nicht ausschlaggebend. */
+.card.summary-card {
+  border-color: var(--color-primary);
+  border-width: 2px;
+}
+
+/* Der Erklaerabschnitt traegt keine Karte, sondern steht direkt auf dem
+   Seitengrund, abgesetzt durch eine feine Linie. "border: none" muss vor
+   "border-top" stehen, sonst raeumt die Kurzschreibweise die Linie wieder
+   ab. */
+.card.prose {
+  background: none;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 4px 0 0;
+  margin-top: 20px;
 }
 
 .tool-grid {
@@ -569,24 +604,11 @@ table.ingredients .col-amount input::-webkit-inner-spin-button {
     margin-bottom: 20px;
   }
 
-  /* Drei Ebenen statt lauter gleich aussehender Karten: Karten sind
-     Werkzeug, die Uebersicht ist das Ergebnis, Fliesstext ist Beiwerk.
-     Der Erklaerabschnitt verliert deshalb seine Karte und steht direkt auf
-     dem Seitengrund - das schafft die Abgrenzung und gibt dem Text
-     zugleich die volle Breite. */
+  /* Die drei Ebenen (Karte / Uebersicht / Fliesstext) sind weiter oben
+     fuer jede Breite geregelt. Hier folgt nur der engere Abstand, passend
+     zum schmaleren Kartenabstand dieser Ansicht. */
   .card.prose {
-    background: none;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
-    padding: 4px 0 0;
     margin-top: 14px;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .card.summary-card {
-    border-color: var(--color-primary);
-    border-width: 2px;
   }
 
   /* Die Kacheln der Uebersicht etwas kompakter - bei zwoelf Erklaerzeilen
@@ -663,6 +685,18 @@ table.ingredients .col-amount input::-webkit-inner-spin-button {
   table.ingredients select {
     font-size: 16px;
     padding: 10px 6px;
+  }
+  /* Zellenpolster von 8 auf 5px: Das sind ueber die vier sichtbaren
+     Spalten 24px, die der Zutatenauswahl zugute kommen - dort stiess der
+     Text bisher gegen den Aufklapp-Pfeil ("Anstellgut" wurde
+     angeschnitten). Zusammen mit den geaenderten Spaltenbreiten in
+     doughcalculator.html stehen dem Text jetzt 92 statt 58px zur
+     Verfuegung. Die Schriftgroesse bleibt bei 16px - alles darunter
+     laesst iOS Safari beim Antippen in die Seite zoomen. */
+  table.ingredients th,
+  table.ingredients td {
+    padding-left: 5px;
+    padding-right: 5px;
   }
   .icon-btn {
     width: 40px;
