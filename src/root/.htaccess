@@ -18,6 +18,13 @@
 
 <IfModule mod_headers.c>
 
+  # Hier stand ein "Header set X-Htaccess-Stand", um von aussen erkennen zu
+  # koennen, welcher Stand dieser Datei auf dem Webspace liegt. Es kam nie
+  # beim Browser an, waehrend die Cache-Regeln derselben Datei einwandfrei
+  # wirkten - IONOS scheint eigene X-Header auf dem Weg nach draussen zu
+  # entfernen. Wieder eingebaut werden muss das also nicht; ob ein Stand
+  # oben liegt, verraet stattdessen die Liste der Laeufe unter "Actions".
+
   # Versionierte Auslieferung: ein Jahr, unveraenderlich. "immutable" spart
   # zusaetzlich die Rueckfrage beim Neuladen der Seite.
   <FilesMatch "\.(css|js|svg|png|ico|woff2?)$">
@@ -63,6 +70,18 @@
   AddOutputFilterByType DEFLATE text/javascript application/javascript
   AddOutputFilterByType DEFLATE application/json application/xml
   AddOutputFilterByType DEFLATE image/svg+xml
+
+  # Zusaetzlich ueber die Dateiendung, nicht ueber den Content-Type. Nach
+  # dem Ergaenzen von "text/javascript" oben blieb das Skript weiterhin
+  # unkomprimiert, waehrend CSS, HTML und SVG laengst komprimiert
+  # ankamen - der Weg ueber den Typ trifft es aus unbekanntem Grund nicht.
+  # SetOutputFilter setzt direkt an der Datei an und umgeht die Frage.
+  # Doppelt komprimiert wird dadurch nichts: Apache haengt denselben Filter
+  # kein zweites Mal an, und ob ueberhaupt komprimiert wird, entscheidet
+  # weiterhin das Accept-Encoding des Browsers.
+  <FilesMatch "\.(js|css|svg|json|xml)$">
+    SetOutputFilter DEFLATE
+  </FilesMatch>
 </IfModule>
 
 # Zeichenkodierung fuer Textdateien festschreiben. Die Seiten deklarieren sie
