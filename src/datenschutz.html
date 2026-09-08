@@ -1,0 +1,78 @@
+<!-- QUELLE - wird von build.js zu site/datenschutz/index.html (DE) und
+     site/datenschutz/en/index.html (EN) verarbeitet. site/ liegt nicht im
+     Repository; der Deploy-Workflow baut es vor dem Upload selbst.
+
+     Die Texte zwischen Tags mit data-i18n sind Platzhalter und werden beim
+     Bauen ueberschrieben; geaendert werden sie in src/datenschutz.i18n.json.
+
+     Diese Seite steht bewusst nicht in der sitemap.xml (siehe meta.json) -
+     sie soll erreichbar sein, aber nicht um Sichtbarkeit konkurrieren. -->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datenschutzerklärung – Alltagshelfer</title>
+<meta name="description" content="Welche Daten beim Besuch von apps.ruhmkorf.de anfallen.">
+{{head-links}}
+<!-- ICO zuerst, SVG danach - Begruendung im README, Abschnitt "Icons". -->
+<link rel="icon" href="{{assets}}/favicon.ico" sizes="32x32">
+<link rel="icon" href="{{assets}}/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{assets}}/apple-touch-icon.png">
+<link rel="stylesheet" href="{{assets}}/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site-header">
+    <a class="brand" href="{{link:index}}">
+      <img class="logo-mark" src="{{assets}}/favicon.svg" width="34" height="34" alt="">
+      <span>
+        <span class="brand-name" data-i18n="brandName">Alltagshelfer</span><br>
+        <span class="brand-tag" data-i18n="brandTag">Kostenlose Web-Helfer für den Alltag</span>
+      </span>
+    </a>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="de" class="active">DE</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <main>
+    <h1 data-i18n="title">Datenschutzerklärung</h1>
+    <p class="lede" data-i18n="lede">Diese Seite kommt ohne Cookies, ohne Analyse-Dienste und ohne Nutzerkonten aus. Was trotzdem an Daten anfällt, steht hier.</p>
+
+    <section class="card prose">
+      <h2 data-i18n="responsibleHeading">Verantwortlich</h2>
+      <p data-i18n="responsibleBody">Stefan Ruhmkorf, In den Alleegärten 21, 76297 Stutensee, Deutschland. Kontakt: stefan@ruhmkorf.de</p>
+
+      <h3 data-i18n="shortHeading">Kurz gefasst</h3>
+      <p data-i18n="shortBody">Es werden keine Cookies gesetzt, keine Analyse- oder Werbedienste eingebunden und keine Inhalte von fremden Servern nachgeladen. Es gibt kein Nutzerkonto und kein Formular. Was du in den Rechner eingibst, bleibt auf deinem Gerät.</p>
+
+      <h3 data-i18n="hostingHeading">Aufruf der Seite und Server-Logfiles</h3>
+      <p data-i18n="hostingBody">Die Seite wird bei der IONOS SE, Elgendorfer Straße 57, 56410 Montabaur, gehostet. Wie bei jedem Webserver fallen dabei technisch bedingt Zugriffsdaten an: IP-Adresse, Datum und Uhrzeit, die angeforderte Datei, die übertragene Datenmenge, der verweisende Link und Angaben zu Browser und Betriebssystem.</p>
+      <p data-i18n="hostingPurpose">Diese Daten werden gebraucht, um die Seite überhaupt ausliefern zu können und um Störungen und Angriffe erkennen zu können. Rechtsgrundlage ist das berechtigte Interesse an einem sicheren und funktionierenden Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Eine Zusammenführung dieser Daten mit anderen Quellen findet nicht statt, und es wird kein Nutzungsprofil erstellt. Die Protokolle werden vom Hoster nach kurzer Zeit automatisch gelöscht.</p>
+
+      <h3 data-i18n="storageHeading">Speicherung im Browser</h3>
+      <p data-i18n="storageBody">Der Rechner merkt sich deine zuletzt eingegebene Zutatenliste, damit sie beim nächsten Besuch noch da ist. Gespeichert wird sie im lokalen Speicher deines Browsers (localStorage) – sie wird nicht an den Server übertragen und ist für niemanden außer dir sichtbar. Das ist kein Cookie und dient keiner Wiedererkennung. Du kannst die Daten jederzeit löschen, indem du die Website-Daten in deinen Browsereinstellungen entfernst.</p>
+
+      <h3 data-i18n="thirdPartyHeading">Keine Weitergabe an Dritte</h3>
+      <p data-i18n="thirdPartyBody">Deine Daten werden nicht verkauft, nicht vermietet und nicht zu Werbezwecken weitergegeben. Zugriff hat allein der Hoster, soweit das für den Betrieb der Server nötig ist.</p>
+
+      <h3 data-i18n="rightsHeading">Deine Rechte</h3>
+      <p data-i18n="rightsBody">Du hast das Recht auf Auskunft über die zu dir gespeicherten Daten sowie auf deren Berichtigung, Löschung oder Einschränkung der Verarbeitung, außerdem ein Widerspruchsrecht und ein Recht auf Datenübertragbarkeit. Wende dich dafür an die oben genannte Adresse.</p>
+      <p data-i18n="complaintBody">Unabhängig davon kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren. Zuständig ist der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg.</p>
+
+      <h3 data-i18n="changesHeading">Änderungen</h3>
+      <p data-i18n="changesBody">Kommen später Funktionen dazu, die weitere Daten verarbeiten – etwa eine Reichweitenmessung –, wird diese Erklärung vorher entsprechend ergänzt.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <address class="impressum-footnote">
+      <span data-i18n="impressumHeading">Impressum</span>: Stefan Ruhmkorf · In den Alleegärten 21 · 76297 Stutensee · Deutschland · <span data-i18n="impressumContact">Kontakt</span>: <a href="mailto:stefan@ruhmkorf.de">stefan@ruhmkorf.de</a> · <a href="{{link:datenschutz}}" data-i18n="privacyLink">Datenschutz</a>
+    </address>
+  </footer>
+</div>
+</body>
+</html>

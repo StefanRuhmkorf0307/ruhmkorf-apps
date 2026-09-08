@@ -1,0 +1,64 @@
+# Cache-Regeln fuer apps.ruhmkorf.de
+#
+# Anlass: Der IONOS-Webspace liefert die Dateien ganz ohne Cache-Control-Header
+# aus (nur ETag und Last-Modified). Browser entscheiden dann nach eigener
+# Heuristik, wie lange sie etwas behalten - am 07.09.2026 bekam ein Besucher
+# dadurch neues Markup mit alter Rechenlogik zu sehen.
+#
+# Die Aufteilung nutzt aus, dass CSS, JS und Bilder ueber einen Cache-Buster
+# aus ihrem Inhalt eingebunden werden (?v=<Hash>, siehe build.js): Aendert sich
+# der Inhalt, aendert sich die URL. Diese Dateien duerfen deshalb sehr lange
+# gecacht werden. Die HTML-Dateien tragen keinen solchen Parameter - sie sind
+# es, die den neuen Hash mitbringen muessen, und muessen darum bei jedem
+# Aufruf gegen den Server geprueft werden.
+#
+# Diese Datei liegt unter src/root/ und wird vom Build nach site/ kopiert.
+# Von Hand auf dem Webspace abgelegte Fassungen wuerden beim naechsten Deploy
+# ueberschrieben.
+
+<IfModule mod_headers.c>
+
+  # Versionierte Auslieferung: ein Jahr, unveraenderlich. "immutable" spart
+  # zusaetzlich die Rueckfrage beim Neuladen der Seite.
+  <FilesMatch "\.(css|js|svg|png|ico|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # HTML: immer gegen den Server pruefen. Das ist nicht "nicht cachen" - der
+  # Browser behaelt die Datei und fragt nur nach, ob sie noch stimmt; hat sie
+  # sich nicht geaendert, antwortet der Server mit 304 und schickt nichts.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+
+  # Dasselbe fuer die Seiten, die ueber ihr Verzeichnis aufgerufen werden
+  # (/doughcalculator/ statt /doughcalculator/index.html) - dort greift der
+  # FilesMatch oben nicht, weil der angeforderte Name kein .html traegt.
+  <If "%{REQUEST_URI} =~ m#/$#">
+    Header set Cache-Control "no-cache"
+  </If>
+
+  # Sitemap und robots.txt aendern sich selten, sollen aber auch nicht
+  # tagelang festhaengen.
+  <FilesMatch "^(sitemap\.xml|robots\.txt)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
+
+</IfModule>
+
+# Komprimierung. Die Seite besteht fast nur aus Text, und Text laesst sich um
+# rund zwei Drittel verkleinern: gemessen 81 KB fuer die Rechner-Seite, davon
+# 39 KB Skript, 19 KB Stylesheet und 18 KB Markup. Ob der Webspace das schon
+# von sich aus tut, ist unbekannt - dieser Block schadet in dem Fall nicht,
+# und ohne ihn bliebe es dem Zufall ueberlassen.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml image/svg+xml
+</IfModule>
+
+# Zeichenkodierung fuer Textdateien festschreiben. Die Seiten deklarieren sie
+# zwar selbst per meta charset, aber fuer .js und .txt entscheidet sonst der
+# Server - und ein falscher Vorgabewert macht aus Umlauten Fragezeichen.
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .html .css .js .json .xml .txt

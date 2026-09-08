@@ -18,6 +18,10 @@ ruhmkorf-apps/                  (Repo-Root)
 │   ├── doughcalculator.html       Markup des Rechners
 │   ├── index.html                 Markup der Sammelseite
 │   ├── index.i18n.json            Texte der Sammelseite (DE/EN)
+│   ├── datenschutz.html           Markup der Datenschutzseite
+│   ├── datenschutz.i18n.json      Texte der Datenschutzseite (DE/EN)
+│   ├── root/                      landet unverändert in der Wurzel von site/
+│   │   └── .htaccess              Cache-Header und Komprimierung (siehe unten)
 │   ├── assets/                    Stylesheet, Skript, Icons
 │   │   ├── style.css              gemeinsames Stylesheet
 │   │   ├── doughcalculator.js     Rechenlogik, I18N und UI des Rechners
@@ -33,9 +37,27 @@ ruhmkorf-apps/                  (Repo-Root)
 
 (site/ entsteht beim Bauen und liegt nicht im Repository:
  index.html, en/index.html, doughcalculator/index.html,
- doughcalculator/en/index.html, sitemap.xml, favicon.ico und eine
- Kopie von assets/ — nur src/assets/ wird kopiert, src/icon-sources/ nicht)
+ doughcalculator/en/index.html, datenschutz/index.html,
+ datenschutz/en/index.html, sitemap.xml, robots.txt, favicon.ico,
+ der Inhalt von src/root/ und eine Kopie von assets/ —
+ src/icon-sources/ wird nicht kopiert)
 ```
+
+
+## src/root/
+
+Alles in diesem Ordner landet unverändert in der Wurzel von `site/`. Gedacht
+für Dateien, die genau dort liegen müssen und keine Seite sind:
+
+- **`.htaccess`** — Cache-Header und Komprimierung. Der IONOS-Webspace liefert
+  ohne diese Datei gar keinen `Cache-Control`-Header aus; Browser entscheiden
+  dann nach eigener Heuristik, was am 07.09.2026 dazu geführt hat, dass ein
+  Besucher neues Markup mit alter Rechenlogik zu sehen bekam. Versionierte
+  Dateien (CSS, JS, Bilder — sie tragen einen Hash im Query-Parameter) dürfen
+  ein Jahr gecacht werden, HTML muss bei jedem Aufruf gegengeprüft werden.
+- **Bestätigungsdatei der Google Search Console**, sobald sie vorliegt. Hier
+  abgelegt überlebt sie jeden Deploy; von Hand auf den Webspace kopiert wäre
+  sie beim nächsten Upload weg.
 
 
 ## Icons

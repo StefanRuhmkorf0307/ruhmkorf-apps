@@ -19,7 +19,8 @@
     "comingSoon": "Demnächst",
     "pilotDesc": "Macht das Backen von Sauerteigbrot einfach.",
     "impressumHeading": "Impressum",
-    "impressumContact": "Kontakt"
+    "impressumContact": "Kontakt",
+    "privacyLink": "Datenschutz"
   },
   "en": {
     "brandName": "Alltagshelfer",
@@ -30,6 +31,7 @@
     "comingSoon": "Coming soon",
     "pilotDesc": "Makes baking sourdough bread easy.",
     "impressumHeading": "Legal notice",
-    "impressumContact": "Contact"
+    "impressumContact": "Contact",
+    "privacyLink": "Privacy"
   }
 }

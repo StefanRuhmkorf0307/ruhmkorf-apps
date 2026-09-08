@@ -11,6 +11,7 @@
   ],
   "baseUrl": "https://apps.ruhmkorf.de",
   "defaultLang": "de",
+  "author": "Stefan Ruhmkorf",
   "locales": { "de": "de_DE", "en": "en_US" },
   "pages": [
     {
@@ -36,6 +37,11 @@
       "id": "doughcalculator",
       "source": "doughcalculator.html",
       "i18nFromScript": "src/assets/doughcalculator.js",
+      "schema": {
+        "type": "WebApplication",
+        "name": "DoughCalculator",
+        "applicationCategory": "UtilitiesApplication"
+      },
       "variants": {
         "de": {
           "path": "doughcalculator/index.html",
@@ -50,6 +56,31 @@
           "ogImage": "og-en.png",
           "title": "Sourdough Calculator: Baker's Percentage & Hydration",
           "description": "Free sourdough calculator: work out baker's percentages, hydration and dough yield, estimate the bread weight and scale any recipe to the amount you need."
+        }
+      }
+    },
+    {
+      "id": "datenschutz",
+      "source": "datenschutz.html",
+      "i18n": "datenschutz.i18n.json",
+      "_comment": [
+        "sitemap: false - eine Datenschutzerklaerung soll erreichbar sein, aber",
+        "nicht um Sichtbarkeit konkurrieren. Sie steht im Footer jeder Seite,",
+        "Crawler finden sie darueber ohnehin."
+      ],
+      "sitemap": false,
+      "variants": {
+        "de": {
+          "path": "datenschutz/index.html",
+          "url": "/datenschutz/",
+          "title": "Datenschutzerklärung – Alltagshelfer",
+          "description": "Welche Daten beim Besuch von apps.ruhmkorf.de anfallen: Server-Logfiles beim Hoster, lokale Speicherung im Browser, kein Tracking und keine Cookies."
+        },
+        "en": {
+          "path": "datenschutz/en/index.html",
+          "url": "/datenschutz/en/",
+          "title": "Privacy Policy – Alltagshelfer",
+          "description": "What data is processed when you visit apps.ruhmkorf.de: server log files at the host, local storage in your browser, no tracking and no cookies."
         }
       }
     }

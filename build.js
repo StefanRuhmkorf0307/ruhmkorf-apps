@@ -271,10 +271,12 @@ function renderPage(page, lang, strings) {
     og.push(`<meta name="twitter:card" content="summary">`);
   }
 
+  const jsonLd = buildJsonLd(page, variant, lang);
   const head = [
     `<link rel="canonical" href="${meta.baseUrl}${variant.url}">`,
     ...alternates,
-    ...og
+    ...og,
+    ...(jsonLd ? [jsonLd] : [])
   ].join("\n");
   html = html.replace("{{head-links}}", head);
 
@@ -296,9 +298,56 @@ function renderPage(page, lang, strings) {
   return banner + html;
 }
 
+/* Strukturierte Daten. Suchmaschinen lesen daraus, *was* die Seite ist -
+   ohne das muessen sie es aus dem Text erraten. Fuer einen kostenlosen
+   Online-Rechner ist "WebApplication" der passende Typ; `isAccessibleForFree`
+   und der Nullpreis sind die Angaben, an denen Google kostenlose Werkzeuge
+   von Bezahlangeboten unterscheidet.
+
+   Erzeugt wird der Block nur fuer Seiten, die in meta.json ein "schema"
+   tragen - Titel, Beschreibung und URL kommen aus derselben Quelle wie die
+   Meta-Tags, koennen also nicht davon abweichen. */
+function buildJsonLd(page, variant, lang) {
+  if (!page.schema) return null;
+  const data = {
+    "@context": "https://schema.org",
+    "@type": page.schema.type,
+    name: page.schema.name || variant.title,
+    url: meta.baseUrl + variant.url,
+    description: variant.description,
+    inLanguage: lang,
+    isAccessibleForFree: true,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" }
+  };
+  if (page.schema.applicationCategory) data.applicationCategory = page.schema.applicationCategory;
+  if (page.schema.type === "WebApplication") {
+    data.operatingSystem = "Web";
+    // Ohne Anmeldung nutzbar - fuer ein Werkzeug ohne Konto die ehrliche
+    // Angabe und zugleich das, was Nutzer in der Trefferliste sehen wollen.
+    data.browserRequirements = "JavaScript";
+  }
+  if (meta.author) data.author = { "@type": "Person", name: meta.author };
+  return `<script type="application/ld+json">\n${JSON.stringify(data, null, 2)}\n</script>`;
+}
+
+function buildRobots() {
+  return [
+    "# Nichts auf dieser Seite soll vor Suchmaschinen verborgen bleiben -",
+    "# die Datei existiert vor allem, damit der Verweis auf die Sitemap an",
+    "# der Stelle steht, an der Crawler ihn suchen, und damit der Abruf",
+    "# nicht mehr mit 404 beantwortet wird.",
+    "User-agent: *",
+    "Allow: /",
+    "",
+    `Sitemap: ${meta.baseUrl}/sitemap.xml`,
+    ""
+  ].join("\n");
+}
+
 function buildSitemap(files) {
   const urls = [];
   for (const page of meta.pages) {
+    if (page.sitemap === false) continue; // z.B. die Datenschutzseite
     for (const lang of Object.keys(page.variants)) {
       const v = page.variants[lang];
       const alt = Object.keys(page.variants)
@@ -334,6 +383,7 @@ for (const page of meta.pages) {
 }
 
 generated.set("sitemap.xml", buildSitemap());
+generated.set("robots.txt", buildRobots());
 
 /* Assets werden unveraendert mitkopiert. Erst dadurch ist site/ vollstaendig
    erzeugt und kann komplett aus der Versionskontrolle bleiben - sonst muesste
@@ -343,6 +393,19 @@ const assetFiles = fs.existsSync(SRC_ASSETS) ? fs.readdirSync(SRC_ASSETS) : [];
 if (!assetFiles.length) problems.push("src/assets/ ist leer oder fehlt");
 for (const name of assetFiles) {
   generated.set("assets/" + name, stripMetadata(name, fs.readFileSync(path.join(SRC_ASSETS, name))));
+}
+
+/* src/root/ landet unveraendert in der Wurzel von site/. Gedacht fuer
+   Dateien, die genau dort liegen muessen und keine Seite sind: die
+   .htaccess mit den Cache-Regeln und die Bestaetigungsdatei der Google
+   Search Console. Ohne diesen Ordner muesste man beides von Hand auf den
+   Webspace legen - und beim naechsten Deploy waere es wieder weg. */
+const SRC_ROOT = path.join(SRC, "root");
+if (fs.existsSync(SRC_ROOT)) {
+  for (const name of fs.readdirSync(SRC_ROOT)) {
+    const file = path.join(SRC_ROOT, name);
+    if (fs.statSync(file).isFile()) generated.set(name, fs.readFileSync(file));
+  }
 }
 
 /* Zusaetzlich eine Kopie unter /favicon.ico. Die Seiten verweisen zwar
