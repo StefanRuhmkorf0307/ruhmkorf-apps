@@ -342,23 +342,29 @@
       <p data-i18n="teaserText">Der Rechner macht die Zahlen. DoughPilot macht den Rest: eine iPhone-App, die dich phasenweise durch den Backtag führt und die Zeiten an deine Teigtemperatur anpasst. Die App ist gerade in Arbeit – diese Seite sagt Bescheid, sobald es losgeht.</p>
     </section>
 
+    <!-- Erklaerteil als Frage-Antwort-Folge. Die Texte selbst stehen im
+         I18N-Objekt in src/assets/doughcalculator.js; hier stehen nur
+         Platzhalter. Reihenfolge mit Absicht: Das Umrechnen zuerst, weil
+         es der Punkt ist, an dem sich der Rechner von den reinen
+         Hydrations-Rechnern unterscheidet - und weil es dieselbe Frage
+         aufgreift, die schon in der Ueberschrift der Seite steht. -->
     <section class="card prose">
-      <h2 data-i18n="explainHeading">Was der Rechner berechnet</h2>
+      <h2 data-i18n="faqHeading">Häufige Fragen</h2>
 
-      <h3 data-i18n="explainBakerHeading">Bäckerprozent</h3>
-      <p data-i18n="explainBakerText">Beim Bäckerprozent wird jede Zutat ins Verhältnis zum Gesamtmehlgewicht gesetzt, das dabei immer 100 % entspricht. Ein Rezept mit 1.000 g Mehl und 700 g Wasser hat also 70 % Wasser, unabhängig davon, wie groß der Ansatz insgesamt ist. Genau das macht die Angabe nützlich: Rezepte unterschiedlicher Größe werden direkt vergleichbar, und das Umrechnen auf eine andere Menge ist reine Multiplikation.</p>
+      <h3 data-i18n="faqScaleQ">Wie rechne ich ein Sauerteigrezept auf eine andere Menge um?</h3>
+      <p data-i18n="faqScaleA">Platzhalter, wird beim Bauen ersetzt.</p>
 
-      <h3 data-i18n="explainHydrationHeading">Hydration</h3>
-      <p data-i18n="explainHydrationText">Die Hydration ist der Wasseranteil in Bäckerprozent, also das Gesamtwassergewicht geteilt durch das Gesamtmehlgewicht. Anstellgut zählt dabei anteilig mit: Bei einem Verhältnis von 1:1 bestehen 200 g Anstellgut aus 100 g Mehl und 100 g Wasser, beides fließt in die Rechnung ein. Weiche, offenporige Teige liegen typischerweise zwischen 70 und 85 %, festere Brotteige darunter.</p>
+      <h3 data-i18n="faqBakerQ">Was sind Bäckerprozente – und warum ist Mehl immer 100 %?</h3>
+      <p data-i18n="faqBakerA">Platzhalter, wird beim Bauen ersetzt.</p>
 
-      <h3 data-i18n="explainTaHeading">Teigausbeute (TA)</h3>
-      <p data-i18n="explainTaText">Die Teigausbeute, kurz TA, beschreibt dasselbe wie die Hydration, wird aber anders gerechnet: Mehl plus Wasser, geteilt durch das Mehl. Sie liegt deshalb immer genau 100 über der Hydration – aus 70 % Hydration wird eine TA von 170. Im deutschen Backhandwerk ist die TA die geläufigere Angabe, in englischsprachigen Rezepten findet sich fast immer die Hydration.</p>
+      <h3 data-i18n="faqHydrationQ">Was ist die Teigausbeute (TA) und wie hängt sie mit der Hydration zusammen?</h3>
+      <p data-i18n="faqHydrationA">Platzhalter, wird beim Bauen ersetzt.</p>
 
-      <h3 data-i18n="explainBreadHeading">Brotgewicht und Backverlust</h3>
-      <p data-i18n="explainBreadText">Beim Backen verdunstet Wasser, das fertige Brot wiegt also weniger als der rohe Teig. Der Rechner setzt dafür pauschal 15 % an. Der tatsächliche Verlust hängt von Backzeit, Temperatur und Form ab: flache Brote verlieren mehr als hohe, lange Backzeiten mehr als kurze.</p>
+      <h3 data-i18n="faqStarterQ">Wie wird das Anstellgut in Hydration und Bäckerprozente eingerechnet?</h3>
+      <p data-i18n="faqStarterA">Platzhalter, wird beim Bauen ersetzt.</p>
 
-      <h3 data-i18n="explainScaleHeading">Rezepte skalieren</h3>
-      <p data-i18n="explainScaleText">Beim Skalieren wird ein einziger Faktor auf alle Zutaten angewendet. Die Bäckerprozente bleiben dabei unverändert, das Rezept behält also seinen Charakter. Als Ausgangspunkt kannst du ein Ziel-Teiggewicht angeben, ein gewünschtes Brotgewicht, oder die Menge einer einzelnen Zutat – etwa wenn noch genau 300 g Mehl im Schrank stehen.</p>
+      <h3 data-i18n="faqBreadQ">Wie viel wiegt mein Brot nach dem Backen?</h3>
+      <p data-i18n="faqBreadA">Platzhalter, wird beim Bauen ersetzt.</p>
     </section>
 
   </main>

@@ -132,23 +132,38 @@
       confirmClear: "Wirklich alle Zutaten löschen?",
 
       // Einleitungstexte der Seite.
-      pageHeading: "Sauerteig-Rechner",
-      pageLede: "Trage deine Zutaten ein – der Rechner ermittelt Bäckerprozente, Hydration, Teigausbeute und das zu erwartende Brotgewicht. Rezepte lassen sich auf jede gewünschte Menge umrechnen, ohne Anmeldung und direkt im Browser.",
+      // Kurz gehalten: Die lange Fassung ("... und Bäckerprozente
+      // berechnen") brauchte auf 375px vier Zeilen und 154px Hoehe, bevor
+      // ueberhaupt etwas Inhalt kam. Der zweite Begriff steht im
+      // Title-Tag, in der Einleitung und in einer der Fragen unten - dort
+      // liest ihn eine Suchmaschine genauso.
+      pageHeading: "Sauerteigrezept umrechnen",
+      pageLede: "Du hast ein Rezept und brauchst es in einer anderen Menge? Trage die Zutaten ein: Der Rechner ermittelt Bäckerprozente, Hydration, Teigausbeute und das zu erwartende Brotgewicht – und rechnet alles auf jedes Zielgewicht um. Ohne Anmeldung, direkt im Browser.",
 
       teaserHeading: "DoughPilot – demnächst",
       teaserText: "Der Rechner macht die Zahlen. DoughPilot macht den Rest: eine iPhone-App, die dich phasenweise durch den Backtag führt und die Zeiten an deine Teigtemperatur anpasst. Die App ist gerade in Arbeit – diese Seite sagt Bescheid, sobald es losgeht.",
 
-      explainHeading: "Was der Rechner berechnet",
-      explainBakerHeading: "Bäckerprozent",
-      explainBakerText: "Beim Bäckerprozent wird jede Zutat ins Verhältnis zum Gesamtmehlgewicht gesetzt, das dabei immer 100 % entspricht. Ein Rezept mit 1.000 g Mehl und 700 g Wasser hat also 70 % Wasser, unabhängig davon, wie groß der Ansatz insgesamt ist. Genau das macht die Angabe nützlich: Rezepte unterschiedlicher Größe werden direkt vergleichbar, und das Umrechnen auf eine andere Menge ist reine Multiplikation.",
-      explainHydrationHeading: "Hydration",
-      explainHydrationText: "Die Hydration ist der Wasseranteil in Bäckerprozent, also das Gesamtwassergewicht geteilt durch das Gesamtmehlgewicht. Anstellgut zählt dabei anteilig mit: Bei einem Verhältnis von 1:1 bestehen 200 g Anstellgut aus 100 g Mehl und 100 g Wasser, beides fließt in die Rechnung ein. Weiche, offenporige Teige liegen typischerweise zwischen 70 und 85 %, festere Brotteige darunter.",
-      explainTaHeading: "Teigausbeute (TA)",
-      explainTaText: "Die Teigausbeute, kurz TA, beschreibt dasselbe wie die Hydration, wird aber anders gerechnet: Mehl plus Wasser, geteilt durch das Mehl. Sie liegt deshalb immer genau 100 über der Hydration – aus 70 % Hydration wird eine TA von 170. Im deutschen Backhandwerk ist die TA die geläufigere Angabe, in englischsprachigen Rezepten findet sich fast immer die Hydration.",
-      explainBreadHeading: "Brotgewicht und Backverlust",
-      explainBreadText: "Beim Backen verdunstet Wasser, das fertige Brot wiegt also weniger als der rohe Teig. Der Rechner setzt dafür pauschal 15 % an. Der tatsächliche Verlust hängt von Backzeit, Temperatur und Form ab: flache Brote verlieren mehr als hohe, lange Backzeiten mehr als kurze.",
-      explainScaleHeading: "Rezepte skalieren",
-      explainScaleText: "Beim Skalieren wird ein einziger Faktor auf alle Zutaten angewendet. Die Bäckerprozente bleiben dabei unverändert, das Rezept behält also seinen Charakter. Als Ausgangspunkt kannst du ein Ziel-Teiggewicht angeben, ein gewünschtes Brotgewicht, oder die Menge einer einzelnen Zutat – etwa wenn noch genau 300 g Mehl im Schrank stehen."
+      // Erklaerteil der Seite. Die Ueberschriften sind bewusst Fragen: So
+      // fragen Leute tatsaechlich, und so laesst sich jeder Abschnitt als
+      // Antwort auf eine Suchanfrage lesen. Das Umrechnen steht zuerst -
+      // das ist der Punkt, an dem sich der Rechner von den reinen
+      // Hydrations-Rechnern der Konkurrenz unterscheidet.
+      faqHeading: "Häufige Fragen",
+
+      faqScaleQ: "Wie rechne ich ein Sauerteigrezept auf eine andere Menge um?",
+      faqScaleA: "Trage das Rezept mit seinen Grammangaben ein und gib unter „Rezept skalieren“ dein Ziel vor: ein Teiggewicht, ein gewünschtes Brotgewicht oder die Menge einer einzelnen Zutat – etwa wenn noch genau 300 g Mehl im Schrank stehen. Der Rechner wendet daraufhin einen einzigen Faktor auf alle Zutaten an. Die Bäckerprozente bleiben unverändert, das Rezept behält also seinen Charakter.",
+
+      faqBakerQ: "Was sind Bäckerprozente – und warum ist Mehl immer 100 %?",
+      faqBakerA: "Beim Bäckerprozent wird jede Zutat ins Verhältnis zum Gesamtmehlgewicht gesetzt, das dabei immer 100 % entspricht – die Summe aller Angaben liegt deshalb über 100. Ein Rezept mit 1.000 g Mehl und 700 g Wasser hat also 70 % Wasser, unabhängig davon, wie groß der Ansatz insgesamt ist. Genau das macht die Angabe nützlich: Rezepte unterschiedlicher Größe werden direkt vergleichbar, und das Umrechnen auf eine andere Menge ist reine Multiplikation.",
+
+      faqHydrationQ: "Was ist die Teigausbeute (TA) und wie hängt sie mit der Hydration zusammen?",
+      faqHydrationA: "Die Hydration ist der Wasseranteil in Bäckerprozent, also Gesamtwasser geteilt durch Gesamtmehl. Weiche, offenporige Teige liegen typischerweise zwischen 70 und 85 %, festere Brotteige darunter. Die Teigausbeute beschreibt dasselbe, wird aber anders gerechnet: Mehl plus Wasser, geteilt durch das Mehl. Sie liegt deshalb immer genau 100 über der Hydration – aus 70 % Hydration wird eine TA von 170. Im deutschen Backhandwerk ist die TA die geläufigere Angabe, in englischsprachigen Rezepten steht fast immer die Hydration.",
+
+      faqStarterQ: "Wie wird das Anstellgut in Hydration und Bäckerprozente eingerechnet?",
+      faqStarterA: "Anstellgut ist weder reines Mehl noch reines Wasser, sondern beides – deshalb zählt es anteilig mit. Bei einem Verhältnis von 1:1 bestehen 200 g Anstellgut aus 100 g Mehl und 100 g Wasser, und beides fließt in die Rechnung ein. Im Rechner stellst du das Verhältnis je Zutat ein; für festere Anstellgute gilt dasselbe mit anderer Aufteilung. Wer das Anstellgut ganz als Wasser verbucht, kommt auf eine zu hohe Hydration.",
+
+      faqBreadQ: "Wie viel wiegt mein Brot nach dem Backen?",
+      faqBreadA: "Beim Backen verdunstet Wasser, das fertige Brot wiegt also weniger als der rohe Teig. Der Rechner setzt dafür pauschal 15 % an. Der tatsächliche Verlust hängt von Backzeit, Temperatur und Form ab: flache Brote verlieren mehr als hohe, lange Backzeiten mehr als kurze. Wenn du auf ein bestimmtes Brotgewicht hinauswillst, gib es direkt als Ziel ein – der Rechner rechnet den Backverlust dann zurück."
     },
     en: {
       ingredientsHeading: "Ingredients",
@@ -177,23 +192,28 @@
       errNoFlour: "Please enter at least one ingredient with flour % > 0 to calculate hydration/baker's percentages.",
       confirmClear: "Really clear all ingredients?",
 
-      pageHeading: "Sourdough Calculator",
-      pageLede: "Enter your ingredients and the calculator works out baker's percentages, hydration, dough yield and the expected bread weight. Scale any recipe to the amount you need – no sign-up, right in your browser.",
+      pageHeading: "Scale a sourdough recipe",
+      pageLede: "Got a recipe and need it in a different size? Enter the ingredients: the calculator works out baker’s percentages, hydration, dough yield and the expected bread weight – and scales everything to whatever amount you need. No sign-up, right in your browser.",
 
       teaserHeading: "DoughPilot – coming soon",
       teaserText: "The calculator handles the numbers. DoughPilot handles the rest: an iPhone app that walks you through the bake phase by phase and adapts the timings to your dough temperature. It's in the works – this page will say so once it's ready.",
 
-      explainHeading: "What the calculator works out",
-      explainBakerHeading: "Baker's percentage",
-      explainBakerText: "In baker's percentages every ingredient is expressed relative to the total flour weight, which always counts as 100%. A recipe with 1,000 g of flour and 700 g of water is therefore at 70% water, no matter how large the batch is. That is what makes the notation useful: recipes of different sizes become directly comparable, and scaling to a different amount is plain multiplication.",
-      explainHydrationHeading: "Hydration",
-      explainHydrationText: "Hydration is the water content in baker's percentages – total water weight divided by total flour weight. Starter counts proportionally: at a 1:1 ratio, 200 g of starter is 100 g of flour and 100 g of water, and both go into the calculation. Slack, open-crumb doughs typically sit between 70 and 85%, firmer bread doughs below that.",
-      explainTaHeading: "Dough yield (Teigausbeute)",
-      explainTaText: "German recipes rarely quote hydration. They use Teigausbeute (TA) instead, which describes the same thing but is calculated differently: flour plus water, divided by the flour. The result is always exactly 100 higher than the hydration – 70% hydration is a TA of 170. Worth knowing if you bake from German sources.",
-      explainBreadHeading: "Bread weight and baking loss",
-      explainBreadText: "Water evaporates during baking, so the finished loaf weighs less than the raw dough. The calculator assumes a flat 15%. The actual loss depends on baking time, temperature and shape: flat loaves lose more than tall ones, long bakes more than short ones.",
-      explainScaleHeading: "Scaling recipes",
-      explainScaleText: "Scaling applies a single factor to every ingredient. The baker's percentages stay untouched, so the recipe keeps its character. You can start from a target dough weight, a desired bread weight, or the amount of a single ingredient – handy when you have exactly 300 g of flour left in the cupboard."
+      faqHeading: "Frequently asked questions",
+
+      faqScaleQ: "How do I scale a sourdough recipe to a different amount?",
+      faqScaleA: "Enter the recipe with its gram amounts and set your target under “Scale recipe”: a dough weight, a desired bread weight, or the amount of a single ingredient – handy when you have exactly 300 g of flour left in the cupboard. The calculator then applies a single factor to every ingredient. The baker’s percentages stay untouched, so the recipe keeps its character.",
+
+      faqBakerQ: "What are baker’s percentages – and why is flour always 100%?",
+      faqBakerA: "In baker’s percentages every ingredient is expressed relative to the total flour weight, which always counts as 100% – which is why the figures add up to more than 100. A recipe with 1,000 g of flour and 700 g of water is therefore at 70% water, no matter how large the batch is. That is what makes the notation useful: recipes of different sizes become directly comparable, and scaling to a different amount is plain multiplication.",
+
+      faqHydrationQ: "What is dough yield (Teigausbeute) and how does it relate to hydration?",
+      faqHydrationA: "Hydration is the water content in baker’s percentages – total water divided by total flour. Slack, open-crumb doughs typically sit between 70 and 85%, firmer bread doughs below that. German recipes rarely quote hydration; they use Teigausbeute (TA) instead, which describes the same thing but is calculated differently: flour plus water, divided by the flour. The result is always exactly 100 higher than the hydration – 70% hydration is a TA of 170. Worth knowing if you bake from German sources.",
+
+      faqStarterQ: "How is the starter counted towards hydration and baker’s percentages?",
+      faqStarterA: "Starter is neither pure flour nor pure water but both, so it counts proportionally. At a 1:1 ratio, 200 g of starter is 100 g of flour and 100 g of water, and both go into the calculation. You set the ratio per ingredient in the calculator; stiffer starters work the same way with a different split. Counting the starter entirely as water gives a hydration figure that is too high.",
+
+      faqBreadQ: "How much will my loaf weigh after baking?",
+      faqBreadA: "Water evaporates during baking, so the finished loaf weighs less than the raw dough. The calculator assumes a flat 15%. The actual loss depends on baking time, temperature and shape: flat loaves lose more than tall ones, long bakes more than short ones. If you are aiming for a particular bread weight, enter that as your target – the calculator works the baking loss back out for you."
     }
   };
 

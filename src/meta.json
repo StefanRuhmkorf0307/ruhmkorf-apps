@@ -47,15 +47,15 @@
           "path": "doughcalculator/index.html",
           "url": "/doughcalculator/",
           "ogImage": "og-de.png",
-          "title": "Sauerteig-Rechner: Bäckerprozente, Hydration & Teigausbeute",
-          "description": "Kostenloser Sauerteig-Rechner: Bäckerprozente, Hydration und Teigausbeute berechnen, Brotgewicht abschätzen und Rezepte auf jede Menge umrechnen."
+          "title": "Sauerteig-Rechner: Rezept umrechnen & Bäckerprozente",
+          "description": "Sauerteigrezept auf jede Menge umrechnen: Der kostenlose Rechner ermittelt Bäckerprozente, Hydration und Teigausbeute aus deiner Zutatenliste und schätzt das Brotgewicht."
         },
         "en": {
           "path": "doughcalculator/en/index.html",
           "url": "/doughcalculator/en/",
           "ogImage": "og-en.png",
-          "title": "Sourdough Calculator: Baker's Percentage & Hydration",
-          "description": "Free sourdough calculator: work out baker's percentages, hydration and dough yield, estimate the bread weight and scale any recipe to the amount you need."
+          "title": "Sourdough Calculator: Scale Recipes & Baker's Percentage",
+          "description": "Scale any sourdough recipe to the amount you need. The free calculator works out baker's percentages, hydration and dough yield from your ingredient list and estimates the bread weight."
         }
       }
     },
