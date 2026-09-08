@@ -51,10 +51,18 @@
 # 39 KB Skript, 19 KB Stylesheet und 18 KB Markup. Ob der Webspace das schon
 # von sich aus tut, ist unbekannt - dieser Block schadet in dem Fall nicht,
 # und ohne ihn bliebe es dem Zufall ueberlassen.
+#
+# Die Liste geht nach dem Content-Type, den der Server sendet - nicht nach
+# der Dateiendung. Genau daran ist der erste Anlauf am 08.09.2026 bei der
+# groessten Datei gescheitert: Hier stand nur "application/javascript",
+# ausgeliefert wird das Skript aber als "text/javascript". Ergebnis: alles
+# komprimiert ausser den 40 KB, auf die es am meisten ankam. Beide
+# Schreibweisen sind gebraeuchlich, deshalb stehen beide drin.
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
-  AddOutputFilterByType DEFLATE application/javascript application/json
-  AddOutputFilterByType DEFLATE application/xml image/svg+xml
+  AddOutputFilterByType DEFLATE text/javascript application/javascript
+  AddOutputFilterByType DEFLATE application/json application/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
 # Zeichenkodierung fuer Textdateien festschreiben. Die Seiten deklarieren sie
