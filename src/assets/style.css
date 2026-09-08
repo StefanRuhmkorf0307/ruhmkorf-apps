@@ -52,7 +52,15 @@
     --color-primary: #d2a04a;
     --color-primary-dark: #e3ba71;
     --color-primary-contrast: #141c17;
-    --color-accent: #8fb39a;
+    /* Dunkler als das helle Pendant erwarten liesse, und das mit Absicht:
+       Im Dark Mode traegt die Uebersicht Gold (#d2a04a). Das bisherige
+       #8fb39a hatte praktisch dieselbe Helligkeit wie dieses Gold -
+       nachgemessen 1,02:1 -, die beiden Raender unterschieden sich also
+       allein im Farbton. Wer Farben schlecht unterscheidet, saehe zweimal
+       dasselbe. Mit diesem Wert liegen sie bei 1,67:1 und bleiben zugleich
+       mit 3,85:1 gegen die Kartenflaeche ueber der Schwelle fuer
+       Bedienelemente. */
+    --color-accent: #5c8a6c;
     --color-danger: #e0806c;
     --color-teaser-top: #23301f;
     --color-teaser-border: #3d4a2e;
@@ -292,6 +300,23 @@ img.tool-icon {
    Reihenfolge im Stylesheet ist hier also nicht ausschlaggebend. */
 .card.summary-card {
   border-color: var(--color-primary);
+  border-width: 2px;
+}
+
+/* Zwei gleich wichtige Karten, zwei Farben. Das Skalieren ist der zweite
+   Grund, aus dem jemand die Seite aufruft, und war als schlichte Karte
+   leicht zu uebersehen. Es bekommt deshalb dasselbe Gewicht wie die
+   Uebersicht - gleiche Randstaerke -, aber die Akzentfarbe statt der
+   Markenfarbe: hier wird eingestellt, dort abgelesen. Beide gleich zu
+   faerben waere der naheliegende Weg gewesen und der falsche - dann sehen
+   zwei von drei Karten gleich aus, und die Hervorhebung sagt nichts mehr.
+
+   Dass die Farbwelt im Dark Mode die Rollen von Gruen und Gold tauscht,
+   trifft auch diese beiden Raender: hell ist Skalieren gold, dunkel
+   gedaempft gruen. Innerhalb eines Modus bleiben sie unterscheidbar, und
+   beide Modi sieht niemand nebeneinander. */
+.card.scale-card {
+  border-color: var(--color-accent);
   border-width: 2px;
 }
 
