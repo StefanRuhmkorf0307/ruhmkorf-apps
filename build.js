@@ -345,6 +345,19 @@ for (const name of assetFiles) {
   generated.set("assets/" + name, stripMetadata(name, fs.readFileSync(path.join(SRC_ASSETS, name))));
 }
 
+/* Zusaetzlich eine Kopie unter /favicon.ico. Die Seiten verweisen zwar
+   ausdruecklich auf assets/favicon.ico, aber Browser fragen diesen Pfad von
+   sich aus ab, wenn sie mit den angegebenen Icons nichts anfangen koennen -
+   Safari vor Version 26 kann das SVG-Favicon nicht und tut genau das. Ohne
+   die Kopie beantwortet der Server das mit 404, und Safari greift dann auf
+   das zurueck, was seine Icon-Datenbank unter ruhmkorf.de gespeichert hat:
+   das alte Zeichen der Hauptseite. */
+if (generated.has("assets/favicon.ico")) {
+  generated.set("favicon.ico", generated.get("assets/favicon.ico"));
+} else {
+  problems.push("src/assets/favicon.ico fehlt - ohne sie zeigen aeltere Safari-Versionen ein fremdes Icon");
+}
+
 if (problems.length) {
   console.error("Build abgebrochen:");
   for (const p of problems) console.error("  - " + p);

@@ -18,20 +18,64 @@ ruhmkorf-apps/                  (Repo-Root)
 │   ├── doughcalculator.html       Markup des Rechners
 │   ├── index.html                 Markup der Sammelseite
 │   ├── index.i18n.json            Texte der Sammelseite (DE/EN)
-│   └── assets/                    Stylesheet, Skript, Icons
-│       ├── style.css              gemeinsames Stylesheet
-│       ├── doughcalculator.js     Rechenlogik, I18N und UI des Rechners
-│       ├── favicon.svg            Zeichen des Rechners (auch als Favicon)
-│       ├── doughpilot.svg         Zeichen der App
-│       └── apple-touch-icon.png   Lesezeichen-Icon für iOS
+│   ├── assets/                    Stylesheet, Skript, Icons
+│   │   ├── style.css              gemeinsames Stylesheet
+│   │   ├── doughcalculator.js     Rechenlogik, I18N und UI des Rechners
+│   │   ├── favicon.svg            Zeichen des Rechners (auch als Favicon)
+│   │   ├── favicon.ico            dasselbe Zeichen als Rasterfassung (siehe "Icons")
+│   │   ├── doughpilot.svg         Zeichen der App
+│   │   └── apple-touch-icon.png   Lesezeichen-Icon für iOS
+│   └── icon-sources/              Vorlagen, die nicht ausgeliefert werden
+│       └── favicon-16.svg         vereinfachte 16px-Ebene der ICO-Datei
 ├── .github/workflows/deploy.yml   baut site/ und lädt es zu IONOS (siehe DEPLOYMENT.md)
 ├── DEPLOYMENT.md                   Schritt-für-Schritt: GitHub → IONOS
 └── README.md                       diese Datei
 
 (site/ entsteht beim Bauen und liegt nicht im Repository:
  index.html, en/index.html, doughcalculator/index.html,
- doughcalculator/en/index.html, sitemap.xml und eine Kopie von assets/)
+ doughcalculator/en/index.html, sitemap.xml, favicon.ico und eine
+ Kopie von assets/ — nur src/assets/ wird kopiert, src/icon-sources/ nicht)
 ```
+
+
+## Icons
+
+Das Zeichen liegt zweimal vor, weil sich die Browser uneinig sind:
+**Safari unterstützt SVG-Favicons erst ab Version 26** und ignoriert
+`<link rel="icon" type="image/svg+xml">` davor vollständig. Es fragt dann
+`/favicon.ico` ab — und zeigt, wenn das mit 404 beantwortet wird, das
+Icon, das seine Datenbank unter `ruhmkorf.de` gespeichert hat: das der
+Hauptseite. Genau dieser Fall trat am 08.09.2026 auf.
+
+Deshalb steht in beiden Seiten die ICO-Zeile **vor** der SVG-Zeile:
+Browser nehmen die letzte Zeile, die sie verstehen — Chrome also das SVG,
+Safari unter 26 die ICO-Datei. Der Build legt zusätzlich eine Kopie unter
+`/favicon.ico` ab, damit auch der automatische Abruf nicht ins Leere läuft.
+
+`src/assets/favicon.ico` enthält drei Ebenen, gerendert aus den SVG-Quellen:
+
+| Ebene | Vorlage | wofür |
+|---|---|---|
+| 16px | `src/icon-sources/favicon-16.svg` | Tableiste ohne Retina |
+| 32px | `src/assets/favicon.svg` | Tableiste mit Retina (der Regelfall) |
+| 48px | `src/assets/favicon.svg` | Verknüpfungen unter Windows |
+
+Die 16px-Ebene trägt bewusst ein anderes Motiv: Das volle Zeichen
+zerfällt bei echten 16 Pixeln, das Prozentzeichen wird dort zu einem
+Grauwertraster. Übrig bleibt deshalb nur das Prozentzeichen — es ist das
+Element, das den Rechner von DoughPilot unterscheidet, während der Laib
+beiden Zeichen gemeinsam ist. Ab 32px steckt das volle Motiv drin.
+
+Alle Rasterfassungen (ICO wie `apple-touch-icon.png`) sind **fest in der
+hellen Fassung** gerendert — sie können nicht auf `prefers-color-scheme`
+reagieren, und die dunkelgrüne Kachel mit hellem Zeichen trägt auf hellen
+wie dunklen Tableisten.
+
+Erzeugt wurden sie durch Rendern der SVG-Dateien im Browser (je Größe
+einzeln, nicht durch Herunterrechnen einer großen Fassung) und Bündeln zu
+einer ICO-Datei. Sie werden nicht bei jedem Build neu erzeugt, sondern
+liegen wie die OG-Vorschaubilder als fertige Datei in `src/assets/` —
+nötig ist das nur, wenn sich das Zeichen ändert.
 
 
 ## Bauen und Deployen

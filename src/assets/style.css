@@ -102,7 +102,13 @@ header.site-header {
 
 .brand {
   display: flex;
-  align-items: baseline;
+  /* Mittig statt auf der Schriftlinie: Bei "baseline" haengt sich das
+     34px-Zeichen an die Grundlinie der ersten Textzeile und sitzt dadurch
+     tiefer als seine eigene Mitte. Auf der Sammelseite mit ihrer zweiten
+     Zeile faellt das zusaetzlich gegen den Sprachumschalter auf, der ueber
+     die Kopfzeile ohnehin mittig sitzt. Mit "center" liegen Zeichen,
+     Wortmarke und Umschalter auf einer Mittellinie. */
+  align-items: center;
   gap: 10px;
   text-decoration: none;
   color: inherit;
