@@ -14,8 +14,7 @@ name: Deploy to IONOS (SFTP)
 #   IONOS_FTP_USERNAME  (z.B. u12345678, aus dem gleichen Bereich)
 #   IONOS_FTP_PASSWORD  (das dazugehörige Passwort)
 #
-# Siehe DEPLOYMENT.md für die vollständige Schritt-für-Schritt-Anleitung,
-# insbesondere zum Ermitteln des korrekten remote_path unten.
+# Siehe DEPLOYMENT.md für die vollständige Schritt-für-Schritt-Anleitung.
 
 on:
   push:
@@ -53,10 +52,28 @@ jobs:
           port: 22
           password: ${{ secrets.IONOS_FTP_PASSWORD }}
           local_path: "./site/*"
-          # TODO: An das tatsächliche Zielverzeichnis der Subdomain
-          # apps.ruhmkorf.de anpassen (siehe DEPLOYMENT.md, Schritt 2).
-          # Häufige Muster bei IONOS: "/apps.ruhmkorf.de/" oder
-          # "/clickandbuilds/.../apps/" - im Kundencenter unter
-          # Hosting -> Webspace verwalten nachsehen.
+          remote_path: "/apps/"
+          sftp_only: true
+
+      # Der Stern im local_path oben erfasst keine Dateien mit führendem
+      # Punkt - am 08.09.2026 per SFTP nachgesehen: nach dem Deploy war die
+      # .htaccess schlicht nicht da, während alle übrigen Dateien ankamen.
+      # Deshalb dieser zweite Schritt, der sie einzeln benennt.
+      #
+      # Warum nicht stattdessen den Ordner ohne Stern angeben: Dann legt die
+      # Action das Verzeichnis "site" auf dem Webspace an, statt seinen
+      # Inhalt nach /apps/ zu schreiben. Ein zweiter Schritt für eine Datei
+      # ist der langweiligere, aber verlässlichere Weg.
+      #
+      # Sollten später weitere Dateien mit führendem Punkt dazukommen, ist
+      # hier die Stelle, an der sie ergänzt werden müssen.
+      - name: Upload .htaccess (vom Stern oben nicht erfasst)
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+        with:
+          username: ${{ secrets.IONOS_FTP_USERNAME }}
+          server: ${{ secrets.IONOS_FTP_SERVER }}
+          port: 22
+          password: ${{ secrets.IONOS_FTP_PASSWORD }}
+          local_path: "./site/.htaccess"
           remote_path: "/apps/"
           sftp_only: true
